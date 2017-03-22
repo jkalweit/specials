@@ -286,7 +286,7 @@ function localstorage(){
  */
 
 var keys = __webpack_require__(37);
-var hasBinary = __webpack_require__(12);
+var hasBinary = __webpack_require__(13);
 var sliceBuffer = __webpack_require__(26);
 var after = __webpack_require__(25);
 var utf8 = __webpack_require__(54);
@@ -1078,6 +1078,407 @@ module.exports = function(a, b){
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(52)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /*
+    export interface SyncViewOptions {
+        tag?: keyof ElementTagNameMap;
+        className?: string;
+        style?: CSSStyleDeclarationPartial;
+    }
+    */
+    var SyncView = (function (_super) {
+        __extends(SyncView, _super);
+        function SyncView(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this) || this;
+            _this.defaultDisplay = 'block';
+            _this.options = options;
+            _this.bindings = {};
+            _this.el = document.createElement(_this.options.tag || 'div');
+            _this.el.className = options.className || '';
+            _this.style(_this.options.style || {});
+            return _this;
+        }
+        SyncView.prototype.hasDataChanged = function (newData) {
+            if (!newData)
+                return true;
+            if (this.__currentDataVersion && newData.version) {
+                return this.__currentDataVersion !== newData.version;
+            }
+            return true;
+        };
+        SyncView.prototype.add = function (tag, spec) {
+            if (spec === void 0) { spec = {}; }
+            var el = document.createElement(tag || 'div');
+            el.innerHTML = spec.innerHTML || '';
+            el.className = spec.className || '';
+            if (spec.style) {
+                Object.keys(spec.style).forEach(function (key) { el.style[key] = spec.style[key]; });
+            }
+            if (spec.events) {
+                Object.keys(spec.events).forEach(function (key) {
+                    el.addEventListener(key, spec.events[key]);
+                });
+            }
+            this.el.appendChild(el);
+            return el;
+        };
+        SyncView.prototype.addView = function (view, className) {
+            view.init();
+            if (className)
+                view.el.className += ' ' + className;
+            this.el.appendChild(view.el);
+            return view;
+        };
+        SyncView.prototype.addBinding = function (memberName, prop, value) {
+            var existing = this.bindings[memberName] || {};
+            existing[prop] = value;
+            this.bindings[memberName] = existing;
+        };
+        SyncView.prototype.style = function (s) {
+            SyncUtils.applyStyle(this.el, s);
+        };
+        SyncView.prototype.init = function () {
+        };
+        SyncView.prototype.update = function (data, force) {
+            if (force || this.hasDataChanged(data)) {
+                this.__currentDataVersion = data ? data.version : undefined;
+                this.data = data;
+                this.bind();
+                this.render();
+            }
+        };
+        SyncView.prototype.bind = function () {
+            var _this = this;
+            function traverse(curr, pathArr) {
+                if (pathArr.length === 0)
+                    return curr;
+                else {
+                    var next = pathArr.shift();
+                    if (curr == null || !curr.hasOwnProperty(next))
+                        return undefined;
+                    return traverse(curr[next], pathArr);
+                }
+            }
+            Object.keys(this.bindings).forEach(function (id) {
+                var props = _this.bindings[id];
+                Object.keys(props).forEach(function (prop) {
+                    var valuePath = props[prop];
+                    var value = traverse(_this, valuePath.split('.'));
+                    if (prop === 'update') {
+                        _this[id].update(value);
+                    }
+                    else {
+                        _this[id][prop] = value;
+                    }
+                });
+            });
+        };
+        SyncView.prototype.show = function () {
+            this.el.style.display = '';
+        };
+        SyncView.prototype.hide = function () {
+            this.el.style.display = 'none';
+        };
+        SyncView.prototype.render = function () {
+        };
+        SyncView.createStyleElement = function () {
+            var style = document.createElement('style');
+            // WebKit hack :(
+            style.appendChild(document.createTextNode(""));
+            document.head.appendChild(style);
+            return style;
+        };
+        SyncView.addGlobalStyle = function (selector, style) {
+            SyncView.globalStyles.sheet.addRule(selector, style);
+        };
+        SyncView.appendGlobalStyles = function () {
+        };
+        return SyncView;
+    }(SyncNode_1.SyncNodeEventEmitter));
+    SyncView.globalStyles = SyncView.createStyleElement();
+    exports.SyncView = SyncView;
+    var SyncUtils = (function () {
+        function SyncUtils() {
+        }
+        SyncUtils.getProperty = function (obj, path) {
+            if (!path)
+                return obj;
+            return SyncUtils.getPropertyHelper(obj, path.split('.'));
+        };
+        SyncUtils.getPropertyHelper = function (obj, split) {
+            if (split.length === 1)
+                return obj[split[0]];
+            if (obj == null)
+                return null;
+            return SyncUtils.getPropertyHelper(obj[split[0]], split.slice(1, split.length));
+        };
+        SyncUtils.mergeMap = function (destination, source) {
+            destination = JSON.parse(JSON.stringify(destination || {})); // make a copy
+            Object.keys(source || {}).forEach(function (key) {
+                destination[key] = source[key];
+            });
+            return destination;
+        };
+        SyncUtils.applyStyle = function (el, s) {
+            SyncUtils.mergeMap(el.style, s);
+        };
+        SyncUtils.normalize = function (str) {
+            return (str || '').trim().toLowerCase();
+        };
+        SyncUtils.toMap = function (arr, keyValFunc) {
+            keyValFunc = keyValFunc || (function (obj) { return obj.key; });
+            if (!Array.isArray(arr))
+                return arr;
+            var result = {};
+            var curr;
+            for (var i = 0; i < arr.length; i++) {
+                curr = arr[i];
+                result[keyValFunc(curr)] = curr;
+            }
+            return result;
+        };
+        SyncUtils.sortMap = function (obj, sortField, reverse, keyValFunc) {
+            return SyncUtils.toMap(SyncUtils.toArray(obj, sortField, reverse), keyValFunc);
+        };
+        SyncUtils.toArray = function (obj, sortField, reverse) {
+            var result;
+            if (Array.isArray(obj)) {
+                result = obj.slice();
+            }
+            else {
+                result = [];
+                if (!obj)
+                    return result;
+                Object.keys(obj).forEach(function (key) {
+                    if (key !== 'version' && key !== 'lastModified' && key !== 'key') {
+                        result.push(obj[key]);
+                    }
+                });
+            }
+            if (sortField) {
+                var getSortValue_1;
+                if (typeof sortField === 'function')
+                    getSortValue_1 = sortField;
+                else
+                    getSortValue_1 = function (obj) { return SyncUtils.getProperty(obj, sortField); };
+                result.sort(function (a, b) {
+                    var a1 = getSortValue_1(a);
+                    var b1 = getSortValue_1(b);
+                    if (typeof a1 === 'string')
+                        a1 = a1.toLowerCase();
+                    if (typeof b1 === 'string')
+                        b1 = b1.toLowerCase();
+                    if (a1 < b1)
+                        return reverse ? 1 : -1;
+                    if (a1 > b1)
+                        return reverse ? -1 : 1;
+                    return 0;
+                });
+            }
+            return result;
+        };
+        SyncUtils.forEach = function (obj, func) {
+            if (!Array.isArray(obj)) {
+                obj = SyncUtils.toArray(obj);
+            }
+            obj.forEach(function (val) { return func(val); });
+        };
+        SyncUtils.getByKey = function (obj, key) {
+            if (Array.isArray(obj)) {
+                for (var i = 0; i < obj.length; i++) {
+                    if (obj[i].key === key)
+                        return obj[i];
+                }
+            }
+            else {
+                return obj[key];
+            }
+        };
+        SyncUtils.param = function (variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) {
+                    return pair[1];
+                }
+            }
+            return (false);
+        };
+        SyncUtils.getHash = function () {
+            var hash = window.location.hash;
+            hash = SyncUtils.normalize(hash);
+            return hash.length > 0 ? hash.substr(1) : '';
+        };
+        SyncUtils.group = function (arr, prop, groupVals) {
+            var groups = {};
+            if (Array.isArray(groupVals)) {
+                groupVals.forEach(function (groupVal) {
+                    groups[groupVal] = { key: groupVal };
+                });
+            }
+            if (!Array.isArray(arr))
+                arr = SyncUtils.toArray(arr);
+            arr.forEach(function (item) {
+                var val;
+                if (typeof prop === 'function') {
+                    val = prop(item);
+                }
+                else {
+                    val = item[prop];
+                }
+                if (!groups[val])
+                    groups[val] = { key: val };
+                groups[val][item.key] = item;
+            });
+            return groups;
+        };
+        SyncUtils.filterMap = function (map, filterFn) {
+            var result = {};
+            map = map || {};
+            Object.keys(map).forEach(function (key) {
+                if (key !== 'version' && key !== 'key' && key !== 'lastModified' && filterFn(map[key])) {
+                    result[key] = map[key];
+                }
+            });
+            return result;
+        };
+        SyncUtils.isEmptyObject = function (obj) {
+            return Object.keys(obj).length === 0;
+        };
+        SyncUtils.formatCurrency = function (value, precision, emptyString) {
+            if (value === "") {
+                if (emptyString)
+                    return emptyString;
+                else
+                    value = "0";
+            }
+            precision = precision || 2;
+            var number = (typeof value === "string") ? parseFloat(value) : value;
+            if (typeof number !== "number") {
+                return emptyString || "";
+            }
+            return number.toFixed(precision);
+        };
+        SyncUtils.toNumberOrZero = function (value) {
+            if (typeof value === "number")
+                return value;
+            if (typeof value === "string") {
+                if (value.trim() === "")
+                    return 0;
+                var number = parseFloat(value);
+                if (typeof number !== "number") {
+                    return 0;
+                }
+            }
+            return 0;
+        };
+        return SyncUtils;
+    }());
+    exports.SyncUtils = SyncUtils;
+    var SyncList = (function (_super) {
+        __extends(SyncList, _super);
+        function SyncList(options) {
+            var _this = _super.call(this, options) || this;
+            _this.views = {};
+            return _this;
+        }
+        SyncList.prototype.render = function () {
+            var _this = this;
+            var data = this.data || {};
+            var itemsArr = SyncUtils.toArray(data, this.options.sortField, this.options.sortReversed);
+            Object.keys(this.views).forEach(function (key) {
+                var view = _this.views[key];
+                if (!SyncUtils.getByKey(data, view.data.key)) {
+                    _this.el.removeChild(view.el);
+                    delete _this.views[view.data.key];
+                    _this.emit('removedView', view);
+                }
+            });
+            var previous;
+            itemsArr.forEach(function (item) {
+                var view = _this.views[item.key];
+                if (!view) {
+                    //let toInit: SyncView.SyncNodeView<SyncNode.SyncData>[] = [];
+                    var options = {};
+                    _this.emit('addingViewOptions', options);
+                    //view = this.svml.buildComponent(this.options.ctor || this.options.tag, options, toInit);
+                    view = new _this.options.item(options);
+                    //toInit.forEach((v) => { v.init(); });
+                    _this.views[item.key] = view;
+                    _this.emit('viewAdded', view);
+                }
+                // Attempt to preserve order:
+                _this.el.insertBefore(view.el, previous ? previous.el.nextSibling : _this.el.firstChild);
+                view.onAny(function (eventName) {
+                    var args = [];
+                    for (var _i = 1; _i < arguments.length; _i++) {
+                        args[_i - 1] = arguments[_i];
+                    }
+                    args.unshift(view);
+                    args.unshift(eventName);
+                    _this.emit.apply(_this, args);
+                });
+                view.update(item);
+                previous = view;
+            });
+        };
+        return SyncList;
+    }(SyncView));
+    exports.SyncList = SyncList;
+    var SyncApp = (function () {
+        function SyncApp(main, options) {
+            this.mainView = main;
+            this.options = options || {};
+        }
+        SyncApp.prototype.start = function () {
+            var _this = this;
+            window.addEventListener('load', function () {
+                document.body.appendChild(_this.mainView.el);
+                var sync = new SyncNode_1.SyncNodeSocket(_this.options.dataPath || "/data", {}, _this.options.host);
+                sync.on('updated', function (data) {
+                    console.log('updated', data);
+                    _this.mainView.update(data);
+                });
+            });
+        };
+        return SyncApp;
+    }());
+    exports.SyncApp = SyncApp;
+    var SyncReloader = (function () {
+        function SyncReloader() {
+        }
+        SyncReloader.prototype.start = function () {
+            // for debugging, receive reload signals from server when source files change
+            io().on('reload', function () {
+                console.log('reload!!!!');
+                location.reload();
+            });
+        };
+        return SyncReloader;
+    }());
+    exports.SyncReloader = SyncReloader;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /**
  * Module dependencies.
  */
@@ -1238,7 +1639,7 @@ Transport.prototype.onClose = function () {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
@@ -1282,7 +1683,7 @@ module.exports = function (opts) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /**
@@ -1325,7 +1726,7 @@ exports.decode = function(qs){
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -1337,7 +1738,7 @@ var debug = __webpack_require__(47)('socket.io-parser');
 var json = __webpack_require__(39);
 var Emitter = __webpack_require__(46);
 var binary = __webpack_require__(45);
-var isBuf = __webpack_require__(19);
+var isBuf = __webpack_require__(20);
 
 /**
  * Protocol version.
@@ -1735,7 +2136,7 @@ function error(data){
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /**
@@ -1764,14 +2165,14 @@ module.exports = function(obj, fn){
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * Module dependencies
  */
 
-var XMLHttpRequest = __webpack_require__(6);
+var XMLHttpRequest = __webpack_require__(7);
 var XHR = __webpack_require__(35);
 var JSONP = __webpack_require__(34);
 var websocket = __webpack_require__(36);
@@ -1824,18 +2225,18 @@ function polling (opts) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(5);
-var parseqs = __webpack_require__(7);
+var Transport = __webpack_require__(6);
+var parseqs = __webpack_require__(8);
 var parser = __webpack_require__(2);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(21);
+var yeast = __webpack_require__(22);
 var debug = __webpack_require__(1)('engine.io-client:polling');
 
 /**
@@ -1849,7 +2250,7 @@ module.exports = Polling;
  */
 
 var hasXHR2 = (function () {
-  var XMLHttpRequest = __webpack_require__(6);
+  var XMLHttpRequest = __webpack_require__(7);
   var xhr = new XMLHttpRequest({ xdomain: false });
   return null != xhr.responseType;
 })();
@@ -2075,7 +2476,7 @@ Polling.prototype.uri = function () {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -2083,7 +2484,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(14);
+var isArray = __webpack_require__(15);
 
 /**
  * Module exports.
@@ -2141,7 +2542,7 @@ function hasBinary(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 
@@ -2156,7 +2557,7 @@ module.exports = function(arr, obj){
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = Array.isArray || function (arr) {
@@ -2165,7 +2566,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /**
@@ -2210,7 +2611,7 @@ module.exports = function parseuri(str) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -2219,13 +2620,13 @@ module.exports = function parseuri(str) {
  */
 
 var eio = __webpack_require__(31);
-var Socket = __webpack_require__(18);
+var Socket = __webpack_require__(19);
 var Emitter = __webpack_require__(3);
-var parser = __webpack_require__(8);
-var on = __webpack_require__(17);
-var bind = __webpack_require__(9);
+var parser = __webpack_require__(9);
+var on = __webpack_require__(18);
+var bind = __webpack_require__(10);
 var debug = __webpack_require__(1)('socket.io-client:manager');
-var indexOf = __webpack_require__(13);
+var indexOf = __webpack_require__(14);
 var Backoff = __webpack_require__(27);
 
 /**
@@ -2776,7 +3177,7 @@ Manager.prototype.onreconnect = function () {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 
@@ -2806,7 +3207,7 @@ function on (obj, ev, fn) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -2814,13 +3215,13 @@ function on (obj, ev, fn) {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(8);
+var parser = __webpack_require__(9);
 var Emitter = __webpack_require__(3);
 var toArray = __webpack_require__(50);
-var on = __webpack_require__(17);
-var bind = __webpack_require__(9);
+var on = __webpack_require__(18);
+var bind = __webpack_require__(10);
 var debug = __webpack_require__(1)('socket.io-client:socket');
-var hasBin = __webpack_require__(12);
+var hasBin = __webpack_require__(13);
 
 /**
  * Module exports.
@@ -3231,7 +3632,7 @@ Socket.prototype.compress = function (compress) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -3251,7 +3652,7 @@ function isBuf(obj) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -3279,7 +3680,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3354,7 +3755,7 @@ module.exports = yeast;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3688,409 +4089,6 @@ module.exports = yeast;
     polyfill();
   }
 })(window, document);
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(51)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    /*
-    export interface SyncViewOptions {
-        tag?: keyof ElementTagNameMap;
-        className?: string;
-        style?: CSSStyleDeclarationPartial;
-    }
-    */
-    var SyncView = (function (_super) {
-        __extends(SyncView, _super);
-        function SyncView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this) || this;
-            _this.options = options;
-            _this.bindings = {};
-            _this.el = document.createElement(_this.options.tag || 'div');
-            _this.el.className = options.className || '';
-            _this.style(_this.options.style || {});
-            return _this;
-        }
-        SyncView.prototype.hasDataChanged = function (newData) {
-            if (!newData)
-                return true;
-            if (this.__currentDataVersion && newData.version) {
-                return this.__currentDataVersion !== newData.version;
-            }
-            return true;
-        };
-        SyncView.prototype.add = function (tag, spec) {
-            if (spec === void 0) { spec = {}; }
-            var el = document.createElement(tag || 'div');
-            el.innerHTML = spec.innerHTML || '';
-            el.className = spec.className || '';
-            if (spec.style) {
-                Object.keys(spec.style).forEach(function (key) { el.style[key] = spec.style[key]; });
-            }
-            if (spec.events) {
-                Object.keys(spec.events).forEach(function (key) {
-                    el.addEventListener(key, spec.events[key]);
-                });
-            }
-            this.el.appendChild(el);
-            return el;
-        };
-        SyncView.prototype.addView = function (view, className) {
-            view.init();
-            if (className)
-                view.el.className += ' ' + className;
-            this.el.appendChild(view.el);
-            return view;
-        };
-        SyncView.prototype.addBinding = function (memberName, prop, value) {
-            var existing = this.bindings[memberName] || {};
-            existing[prop] = value;
-            this.bindings[memberName] = existing;
-        };
-        SyncView.prototype.style = function (s) {
-            SyncUtils.applyStyle(this.el, s);
-        };
-        SyncView.prototype.init = function () {
-        };
-        SyncView.prototype.update = function (data, force) {
-            if (force || this.hasDataChanged(data)) {
-                this.__currentDataVersion = data ? data.version : undefined;
-                this.data = data;
-                this.bind();
-                this.render();
-            }
-        };
-        SyncView.prototype.bind = function () {
-            var _this = this;
-            function traverse(curr, pathArr) {
-                if (pathArr.length === 0)
-                    return curr;
-                else {
-                    var next = pathArr.shift();
-                    if (curr == null || !curr.hasOwnProperty(next))
-                        return undefined;
-                    return traverse(curr[next], pathArr);
-                }
-            }
-            Object.keys(this.bindings).forEach(function (id) {
-                var props = _this.bindings[id];
-                Object.keys(props).forEach(function (prop) {
-                    var valuePath = props[prop];
-                    var value = traverse(_this, valuePath.split('.'));
-                    if (prop === 'update') {
-                        _this[id].update(value);
-                    }
-                    else {
-                        _this[id][prop] = value;
-                    }
-                });
-            });
-        };
-        SyncView.prototype.show = function () {
-            this.el.style.display = this.el.style.display_old || 'block';
-        };
-        SyncView.prototype.hide = function () {
-            if (this.el.style.display !== 'none') {
-                this.el.style.display_old = this.el.style.display;
-                this.el.style.display = 'none';
-            }
-        };
-        SyncView.prototype.render = function () {
-        };
-        SyncView.createStyleElement = function () {
-            var style = document.createElement('style');
-            // WebKit hack :(
-            style.appendChild(document.createTextNode(""));
-            document.head.appendChild(style);
-            return style;
-        };
-        SyncView.addGlobalStyle = function (selector, style) {
-            SyncView.globalStyles.sheet.addRule(selector, style);
-        };
-        SyncView.appendGlobalStyles = function () {
-        };
-        return SyncView;
-    }(SyncNode_1.SyncNodeEventEmitter));
-    SyncView.globalStyles = SyncView.createStyleElement();
-    exports.SyncView = SyncView;
-    var SyncUtils = (function () {
-        function SyncUtils() {
-        }
-        SyncUtils.getProperty = function (obj, path) {
-            if (!path)
-                return obj;
-            return SyncUtils.getPropertyHelper(obj, path.split('.'));
-        };
-        SyncUtils.getPropertyHelper = function (obj, split) {
-            if (split.length === 1)
-                return obj[split[0]];
-            if (obj == null)
-                return null;
-            return SyncUtils.getPropertyHelper(obj[split[0]], split.slice(1, split.length));
-        };
-        SyncUtils.mergeMap = function (destination, source) {
-            destination = destination || {};
-            Object.keys(source || {}).forEach(function (key) {
-                destination[key] = source[key];
-            });
-            return destination;
-        };
-        SyncUtils.applyStyle = function (el, s) {
-            SyncUtils.mergeMap(el.style, s);
-        };
-        SyncUtils.normalize = function (str) {
-            return (str || '').trim().toLowerCase();
-        };
-        SyncUtils.toMap = function (arr, keyValFunc) {
-            keyValFunc = keyValFunc || (function (obj) { return obj.key; });
-            if (!Array.isArray(arr))
-                return arr;
-            var result = {};
-            var curr;
-            for (var i = 0; i < arr.length; i++) {
-                curr = arr[i];
-                result[keyValFunc(curr)] = curr;
-            }
-            return result;
-        };
-        SyncUtils.sortMap = function (obj, sortField, reverse, keyValFunc) {
-            return SyncUtils.toMap(SyncUtils.toArray(obj, sortField, reverse), keyValFunc);
-        };
-        SyncUtils.toArray = function (obj, sortField, reverse) {
-            var result;
-            if (Array.isArray(obj)) {
-                result = obj.slice();
-            }
-            else {
-                result = [];
-                if (!obj)
-                    return result;
-                Object.keys(obj).forEach(function (key) {
-                    if (key !== 'version' && key !== 'lastModified' && key !== 'key') {
-                        result.push(obj[key]);
-                    }
-                });
-            }
-            if (sortField) {
-                var getSortValue_1;
-                if (typeof sortField === 'function')
-                    getSortValue_1 = sortField;
-                else
-                    getSortValue_1 = function (obj) { return SyncUtils.getProperty(obj, sortField); };
-                result.sort(function (a, b) {
-                    var a1 = getSortValue_1(a);
-                    var b1 = getSortValue_1(b);
-                    if (typeof a1 === 'string')
-                        a1 = a1.toLowerCase();
-                    if (typeof b1 === 'string')
-                        b1 = b1.toLowerCase();
-                    if (a1 < b1)
-                        return reverse ? 1 : -1;
-                    if (a1 > b1)
-                        return reverse ? -1 : 1;
-                    return 0;
-                });
-            }
-            return result;
-        };
-        SyncUtils.forEach = function (obj, func) {
-            if (!Array.isArray(obj)) {
-                obj = SyncUtils.toArray(obj);
-            }
-            obj.forEach(function (val) { return func(val); });
-        };
-        SyncUtils.getByKey = function (obj, key) {
-            if (Array.isArray(obj)) {
-                for (var i = 0; i < obj.length; i++) {
-                    if (obj[i].key === key)
-                        return obj[i];
-                }
-            }
-            else {
-                return obj[key];
-            }
-        };
-        SyncUtils.param = function (variable) {
-            var query = window.location.search.substring(1);
-            var vars = query.split("&");
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split("=");
-                if (pair[0] == variable) {
-                    return pair[1];
-                }
-            }
-            return (false);
-        };
-        SyncUtils.getHash = function () {
-            var hash = window.location.hash;
-            hash = SyncUtils.normalize(hash);
-            return hash.length > 0 ? hash.substr(1) : '';
-        };
-        SyncUtils.group = function (arr, prop, groupVals) {
-            var groups = {};
-            if (Array.isArray(groupVals)) {
-                groupVals.forEach(function (groupVal) {
-                    groups[groupVal] = { key: groupVal };
-                });
-            }
-            if (!Array.isArray(arr))
-                arr = SyncUtils.toArray(arr);
-            arr.forEach(function (item) {
-                var val;
-                if (typeof prop === 'function') {
-                    val = prop(item);
-                }
-                else {
-                    val = item[prop];
-                }
-                if (!groups[val])
-                    groups[val] = { key: val };
-                groups[val][item.key] = item;
-            });
-            return groups;
-        };
-        SyncUtils.filterMap = function (map, filterFn) {
-            var result = {};
-            map = map || {};
-            Object.keys(map).forEach(function (key) {
-                if (key !== 'version' && key !== 'key' && key !== 'lastModified' && filterFn(map[key])) {
-                    result[key] = map[key];
-                }
-            });
-            return result;
-        };
-        SyncUtils.isEmptyObject = function (obj) {
-            return Object.keys(obj).length === 0;
-        };
-        SyncUtils.formatCurrency = function (value, precision, emptyString) {
-            if (value === "") {
-                if (emptyString)
-                    return emptyString;
-                else
-                    value = "0";
-            }
-            precision = precision || 2;
-            var number = (typeof value === "string") ? parseFloat(value) : value;
-            if (typeof number !== "number") {
-                return emptyString || "";
-            }
-            return number.toFixed(precision);
-        };
-        SyncUtils.toNumberOrZero = function (value) {
-            if (typeof value === "number")
-                return value;
-            if (typeof value === "string") {
-                if (value.trim() === "")
-                    return 0;
-                var number = parseFloat(value);
-                if (typeof number !== "number") {
-                    return 0;
-                }
-            }
-            return 0;
-        };
-        return SyncUtils;
-    }());
-    exports.SyncUtils = SyncUtils;
-    var SyncList = (function (_super) {
-        __extends(SyncList, _super);
-        function SyncList(options) {
-            var _this = _super.call(this, options) || this;
-            _this.views = {};
-            return _this;
-        }
-        SyncList.prototype.render = function () {
-            var _this = this;
-            var data = this.data || {};
-            var itemsArr = SyncUtils.toArray(data, this.options.sortField, this.options.sortReversed);
-            Object.keys(this.views).forEach(function (key) {
-                var view = _this.views[key];
-                if (!SyncUtils.getByKey(data, view.data.key)) {
-                    _this.el.removeChild(view.el);
-                    delete _this.views[view.data.key];
-                    _this.emit('removedView', view);
-                }
-            });
-            var previous;
-            itemsArr.forEach(function (item) {
-                var view = _this.views[item.key];
-                if (!view) {
-                    //let toInit: SyncView.SyncNodeView<SyncNode.SyncData>[] = [];
-                    var options = {};
-                    _this.emit('addingViewOptions', options);
-                    //view = this.svml.buildComponent(this.options.ctor || this.options.tag, options, toInit);
-                    view = new _this.options.item(options);
-                    //toInit.forEach((v) => { v.init(); });
-                    _this.views[item.key] = view;
-                    _this.emit('viewAdded', view);
-                }
-                // Attempt to preserve order:
-                _this.el.insertBefore(view.el, previous ? previous.el.nextSibling : _this.el.firstChild);
-                view.onAny(function (eventName) {
-                    var args = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        args[_i - 1] = arguments[_i];
-                    }
-                    args.unshift(view);
-                    args.unshift(eventName);
-                    _this.emit.apply(_this, args);
-                });
-                view.update(item);
-                previous = view;
-            });
-        };
-        return SyncList;
-    }(SyncView));
-    exports.SyncList = SyncList;
-    var SyncApp = (function () {
-        function SyncApp(main, options) {
-            this.mainView = main;
-            this.options = options || {};
-        }
-        SyncApp.prototype.start = function () {
-            var _this = this;
-            window.addEventListener('load', function () {
-                document.body.appendChild(_this.mainView.el);
-                var sync = new SyncNode_1.SyncNodeSocket(_this.options.dataPath || "/data", {}, _this.options.host);
-                sync.on('updated', function (data) {
-                    console.log('updated', data);
-                    _this.mainView.update(data);
-                });
-            });
-        };
-        return SyncApp;
-    }());
-    exports.SyncApp = SyncApp;
-    var SyncReloader = (function () {
-        function SyncReloader() {
-        }
-        SyncReloader.prototype.start = function () {
-            // for debugging, receive reload signals from server when source files change
-            io().on('reload', function () {
-                console.log('reload!!!!');
-                location.reload();
-            });
-        };
-        return SyncReloader;
-    }());
-    exports.SyncReloader = SyncReloader;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ }),
@@ -4668,14 +4666,14 @@ module.exports.parser = __webpack_require__(2);
  * Module dependencies.
  */
 
-var transports = __webpack_require__(10);
+var transports = __webpack_require__(11);
 var Emitter = __webpack_require__(3);
 var debug = __webpack_require__(1)('engine.io-client:socket');
-var index = __webpack_require__(13);
+var index = __webpack_require__(14);
 var parser = __webpack_require__(2);
-var parseuri = __webpack_require__(15);
+var parseuri = __webpack_require__(16);
 var parsejson = __webpack_require__(41);
-var parseqs = __webpack_require__(7);
+var parseqs = __webpack_require__(8);
 
 /**
  * Module exports.
@@ -4807,8 +4805,8 @@ Socket.protocol = parser.protocol; // this is an int
  */
 
 Socket.Socket = Socket;
-Socket.Transport = __webpack_require__(5);
-Socket.transports = __webpack_require__(10);
+Socket.Transport = __webpack_require__(6);
+Socket.transports = __webpack_require__(11);
 Socket.parser = __webpack_require__(2);
 
 /**
@@ -5414,7 +5412,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
  * Module requirements.
  */
 
-var Polling = __webpack_require__(11);
+var Polling = __webpack_require__(12);
 var inherit = __webpack_require__(4);
 
 /**
@@ -5651,8 +5649,8 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  * Module requirements.
  */
 
-var XMLHttpRequest = __webpack_require__(6);
-var Polling = __webpack_require__(11);
+var XMLHttpRequest = __webpack_require__(7);
+var Polling = __webpack_require__(12);
 var Emitter = __webpack_require__(3);
 var inherit = __webpack_require__(4);
 var debug = __webpack_require__(1)('engine.io-client:polling-xhr');
@@ -6082,11 +6080,11 @@ function unloadHandler () {
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(5);
+var Transport = __webpack_require__(6);
 var parser = __webpack_require__(2);
-var parseqs = __webpack_require__(7);
+var parseqs = __webpack_require__(8);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(21);
+var yeast = __webpack_require__(22);
 var debug = __webpack_require__(1)('engine.io-client:websocket');
 var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
@@ -7322,7 +7320,7 @@ try {
   }
 }).call(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)(module), __webpack_require__(0)))
 
 /***/ }),
 /* 40 */
@@ -7713,8 +7711,8 @@ process.umask = function() { return 0; };
  */
 
 var url = __webpack_require__(44);
-var parser = __webpack_require__(8);
-var Manager = __webpack_require__(16);
+var parser = __webpack_require__(9);
+var Manager = __webpack_require__(17);
 var debug = __webpack_require__(1)('socket.io-client');
 
 /**
@@ -7814,8 +7812,8 @@ exports.connect = lookup;
  * @api public
  */
 
-exports.Manager = __webpack_require__(16);
-exports.Socket = __webpack_require__(18);
+exports.Manager = __webpack_require__(17);
+exports.Socket = __webpack_require__(19);
 
 
 /***/ }),
@@ -7827,7 +7825,7 @@ exports.Socket = __webpack_require__(18);
  * Module dependencies.
  */
 
-var parseuri = __webpack_require__(15);
+var parseuri = __webpack_require__(16);
 var debug = __webpack_require__(1)('socket.io-client:url');
 
 /**
@@ -7910,8 +7908,8 @@ function url (uri, loc) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(14);
-var isBuf = __webpack_require__(19);
+var isArray = __webpack_require__(15);
+var isBuf = __webpack_require__(20);
 
 /**
  * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -8759,6 +8757,128 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Input = (function (_super) {
+        __extends(Input, _super);
+        function Input(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.label = _this.add('span', { "innerHTML": "", "className": "" });
+            _this.input = _this.add('input', { "innerHTML": "", "className": " input_input_style" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({ twoway: true, labelWidth: '100px' }, options);
+            _this.el.className += ' ';
+            _this.el.className += ' Input_style';
+            _this.el.addEventListener('change', _this.onChange.bind(_this));
+            return _this;
+        }
+        Input.prototype.onChange = function () {
+            var val = this.input.value;
+            if (this.options.twoway && this.options.key) {
+                this.data.set(this.options.key, val);
+            }
+            this.emit('change', val);
+        };
+        Input.prototype.value = function () {
+            return this.input.value;
+        };
+        Input.prototype.init = function () {
+            this.label.style.width = this.options.labelWidth;
+        };
+        Input.prototype.render = function () {
+            if (this.options.label) {
+                this.label.innerHTML = this.options.label;
+            }
+            this.label.style.display = this.options.label ? 'flex' : 'none';
+            if (this.data) {
+                this.input.value = this.options.key ? this.data.get(this.options.key) || '' : this.data || '';
+            }
+        };
+        return Input;
+    }(SyncView_1.SyncView));
+    exports.Input = Input;
+    SyncView_1.SyncView.addGlobalStyle('.input_input_style', "\n            flex: 1;\n            font-size: 1em;\n            padding: 0.5em 0;\n            background-color: transparent;\n            border: none;\n            border-bottom: 1px solid rgba(0,0,0,0.5);\n    ");
+    var Modal = (function (_super) {
+        __extends(Modal, _super);
+        function Modal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.viewContainer = _this.add('div', { "innerHTML": "", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({ hideOnClick: true }, options);
+            _this.el.className += ' ';
+            _this.el.className += ' Modal_style';
+            _this.el.addEventListener('click', _this.onClick.bind(_this));
+            _this.viewContainer.addEventListener('click', function (e) { e.stopPropagation(); });
+            return _this;
+        }
+        Modal.prototype.onClick = function () { if (this.options.hideOnClick) {
+            this.hide();
+        } };
+        Modal.prototype.init = function () {
+            this.hide();
+            if (this.options.view) {
+                this.view = new this.options.view();
+                var _me = this;
+                var handler = function (eventName) {
+                    if (eventName === 'hide') {
+                        _me.hide();
+                    }
+                    _me.emit.apply(_me, arguments);
+                };
+                this.view.onAny(handler.bind(this));
+                this.viewContainer.appendChild(this.view.el);
+            }
+        };
+        Modal.prototype.render = function () {
+            if (this.view)
+                this.view.update(this.data);
+        };
+        return Modal;
+    }(SyncView_1.SyncView));
+    exports.Modal = Modal;
+    var SimpleHeader = (function (_super) {
+        __extends(SimpleHeader, _super);
+        function SimpleHeader(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill span_title_style row-fill" });
+            _this.add = _this.add('button', { "innerHTML": "Add", "className": "row-nofill row-nofill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' row';
+            _this.add.addEventListener('click', function () { _this.emit('add'); });
+            return _this;
+        }
+        SimpleHeader.prototype.showButtons = function (val) {
+            this.add.style.display = val ? 'flex' : 'none';
+        };
+        SimpleHeader.prototype.init = function () {
+            this.title.innerHTML = this.options.title;
+        };
+        return SimpleHeader;
+    }(SyncView_1.SyncView));
+    exports.SimpleHeader = SimpleHeader;
+    SyncView_1.SyncView.addGlobalStyle('.span_title_style', " \n            font-weight: bold; \n            font-size: 1.5em;\n        ");
+    SyncView_1.SyncView.addGlobalStyle('.Input_style', " \n        width: 100%;\n        display: flex; \n    ");
+    SyncView_1.SyncView.addGlobalStyle('.Modal_style', " \n        position: fixed;\n        left: 0; right: 0; top: 0; bottom: 0;\n        background-color: rgba(0,0,0,0.7);\n        overflow-y: scroll;\n        display: flex;\n        align-items: center;\n        justify-content: center;\t\n    ");
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(43)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -9171,7 +9291,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
 
 
 /***/ }),
-/* 52 */,
 /* 53 */
 /***/ (function(module, exports) {
 
@@ -9418,7 +9537,7 @@ module.exports = __webpack_amd_options__;
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)(module), __webpack_require__(0)))
 
 /***/ }),
 /* 55 */
@@ -9440,25 +9559,45 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(23), __webpack_require__(22)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, __SyncNode_SyncView_1, smoothscroll) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(51), __webpack_require__(58), __webpack_require__(23)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, smoothscroll) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     smoothscroll.polyfill();
+    var EventHub = (function (_super) {
+        __extends(EventHub, _super);
+        function EventHub(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.isAdminMode = false;
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            return _this;
+        }
+        EventHub.prototype.toggleAdminMode = function () {
+            this.isAdminMode = !this.isAdminMode;
+            this.emit('isAdminModeChanged', this.isAdminMode);
+        };
+        EventHub.prototype.init = function () {
+            var _this = this;
+            document.addEventListener('keypress', function (e) {
+                if (e.keyCode === 94) {
+                    _this.toggleAdminMode();
+                }
+            });
+        };
+        return EventHub;
+    }(SyncView_1.SyncView));
+    exports.EventHub = EventHub;
     var MainView = (function (_super) {
         __extends(MainView, _super);
         function MainView(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
             _this.isInited = false;
-            _this.pageList = _this.addView(new PageList(), '');
-            _this.editor = _this.addView(new PageEditor(), '');
+            _this.editor = _this.addView(new PageEditor(), 'row-fill');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' row';
             _this.el.className += ' MainView_style';
-            _this.pageList.on('selected', function (page) {
-                _this.selectedPage = page;
-                _this.editor.update(page);
-            });
-            _this.addBinding('pageList', 'update', 'data.pages');
             return _this;
         }
         MainView.prototype.render = function () {
@@ -9468,14 +9607,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
                 this.selectedPage = this.data.pages[this.selectedPage.key];
             if (!this.isInited) {
                 this.isInited = true;
-                var pages = __SyncNode_SyncView_1.SyncUtils.toArray(this.data.pages);
+                var pages = SyncView_1.SyncUtils.toArray(this.data.pages);
                 if (pages.length > 0)
                     this.selectedPage = pages[0];
             }
             this.editor.update(this.selectedPage);
         };
         return MainView;
-    }(__SyncNode_SyncView_1.SyncView));
+    }(SyncView_1.SyncView));
     exports.MainView = MainView;
     var PageList = (function (_super) {
         __extends(PageList, _super);
@@ -9486,7 +9625,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             _this.hideDrawer = _this.add('button', { "innerHTML": "<", "className": " button_hideDrawer_style" });
             _this.title = _this.add('h1', { "innerHTML": "Pages", "className": "" });
             _this.addBtn = _this.add('button', { "innerHTML": "Add Page", "className": " button_addBtn_style" });
-            _this.itemList = _this.addView(new __SyncNode_SyncView_1.SyncList({ item: PageItem }), ' SyncList_itemList_style');
+            _this.itemList = _this.addView(new SyncView_1.SyncList({ item: PageItem }), ' SyncList_itemList_style');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' row-nofill';
             _this.el.className += ' PageList_style';
             _this.hideDrawer.addEventListener('click', function () {
@@ -9496,7 +9636,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             });
             _this.addBtn.addEventListener('click', function () {
                 var page = {
-                    title: 'New Page'
+                    title: 'New Page',
+                    specials: {},
+                    wines: {},
+                    cocktails: {},
+                    drafts: {},
+                    bottles: {}
                 };
                 _this.data.setItem(page);
             });
@@ -9505,17 +9650,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             return _this;
         }
         return PageList;
-    }(__SyncNode_SyncView_1.SyncView));
+    }(SyncView_1.SyncView));
     exports.PageList = PageList;
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.button_hideDrawer_style', " position: absolute; top: 0; right: 0; ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.button_addBtn_style', " width: 100%; ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.SyncList_itemList_style', " width: 100%; margin-top: 1em; ");
+    SyncView_1.SyncView.addGlobalStyle('.button_hideDrawer_style', " position: absolute; top: 0; right: 0; ");
+    SyncView_1.SyncView.addGlobalStyle('.button_addBtn_style', " width: 100%; ");
+    SyncView_1.SyncView.addGlobalStyle('.SyncList_itemList_style', " width: 100%; margin-top: 1em; ");
     var PageItem = (function (_super) {
         __extends(PageItem, _super);
         function PageItem(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
             _this.title = _this.add('span', { "innerHTML": "", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' ';
             _this.el.className += ' PageItem_style';
             _this.el.addEventListener('click', _this.onClick.bind(_this));
@@ -9526,16 +9672,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             this.emit('selected', this.data);
         };
         return PageItem;
-    }(__SyncNode_SyncView_1.SyncView));
+    }(SyncView_1.SyncView));
     exports.PageItem = PageItem;
     var PageEditorControls = (function (_super) {
         __extends(PageEditorControls, _super);
         function PageEditorControls(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Input({ twoway: true, label: 'Title', key: 'title' }), '');
-            _this.fill = _this.add('div', { "innerHTML": "", "className": " row-fill" });
-            _this.delBtn = _this.add('button', { "innerHTML": "Delete Page", "className": " row-nofill" });
+            _this.title = _this.addView(new Components_1.Input({ twoway: true, label: 'Title', key: 'title' }), 'row-nofill Input_title_style');
+            _this.fill = _this.add('div', { "innerHTML": "", "className": "row-fill row-fill" });
+            _this.delBtn = _this.add('button', { "innerHTML": "Delete Page", "className": "row-nofill row-nofill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' row';
             _this.addBinding('title', 'update', 'data');
             _this.delBtn.addEventListener('click', function () {
@@ -9546,31 +9693,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             return _this;
         }
         return PageEditorControls;
-    }(__SyncNode_SyncView_1.SyncView));
+    }(SyncView_1.SyncView));
     exports.PageEditorControls = PageEditorControls;
-    var PageAndPreview = (function (_super) {
-        __extends(PageAndPreview, _super);
-        function PageAndPreview(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.el.className += ' row';
-            _this.el.className += ' PageAndPreview_style';
-            return _this;
-        }
-        return PageAndPreview;
-    }(__SyncNode_SyncView_1.SyncView));
-    exports.PageAndPreview = PageAndPreview;
+    SyncView_1.SyncView.addGlobalStyle('.Input_title_style', " width: 350px; ");
     var PageEditor = (function (_super) {
         __extends(PageEditor, _super);
         function PageEditor(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
-            _this.controls = _this.addView(new PageEditorControls(), ' PageEditorControls_controls_style');
-            _this.pageAndPreview = _this.addView(new PageAndPreview(), '');
+            _this.cols = _this.addView(new PageEditorColumns(), 'col-fill');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' row-fill col';
             _this.el.className += ' PageEditor_style';
-            _this.addBinding('controls', 'update', 'data');
-            _this.addBinding('pageAndPreview', 'update', 'data');
+            _this.addBinding('cols', 'update', 'data');
             return _this;
         }
         PageEditor.prototype.render = function () {
@@ -9580,45 +9715,238 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
                 this.hide();
         };
         return PageEditor;
-    }(__SyncNode_SyncView_1.SyncView));
+    }(SyncView_1.SyncView));
     exports.PageEditor = PageEditor;
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.PageEditorControls_controls_style', " padding-bottom: 1em; ");
-    var Input = (function (_super) {
-        __extends(Input, _super);
-        function Input(options) {
+    var PageEditorColumns = (function (_super) {
+        __extends(PageEditorColumns, _super);
+        function PageEditorColumns(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
-            _this.input = _this.add('input', { "innerHTML": "", "className": " input_input_style" });
-            _this.el.className += ' ';
-            _this.el.className += ' Input_style';
-            _this.el.addEventListener('change', _this.onChange.bind(_this));
+            _this.specialsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Specials' }), 'row-fill SpecialsListView_specialsList_style');
+            _this.cocktailsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Cocktails' }), 'row-fill SpecialsListView_cocktailsList_style');
+            _this.draftWineColumn = _this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
+            _this.bottlesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Bottles' }), 'row-fill SpecialsListView_bottlesList_style');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' row';
+            _this.addBinding('specialsList', 'update', 'data.specials');
+            _this.addBinding('cocktailsList', 'update', 'data.cocktails');
+            _this.addBinding('draftWineColumn', 'update', 'data');
+            _this.addBinding('bottlesList', 'update', 'data.bottles');
             return _this;
         }
-        Input.prototype.onChange = function () {
-            var val = this.input.value;
-            if (this.options.twoway && this.options.key) {
-                this.data.set(this.options.key, val);
-            }
-            this.emit('change', val);
+        PageEditorColumns.prototype.init = function () {
+            var _this = this;
+            eventHub.on('isAdminModeChanged', function (isAdminMode) {
+                _this.specialsList.updateAdminMode(isAdminMode);
+                _this.cocktailsList.updateAdminMode(isAdminMode);
+                _this.bottlesList.updateAdminMode(isAdminMode);
+            });
         };
-        Input.prototype.render = function () {
-            if (this.data) {
-                this.input.value = this.options.key ? this.data.get(this.options.key) : this.data;
-            }
+        return PageEditorColumns;
+    }(SyncView_1.SyncView));
+    exports.PageEditorColumns = PageEditorColumns;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_specialsList_style', " min-width: 200px; margin-right: 2em; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', " min-width: 200px; margin-right: 2em; ");
+    SyncView_1.SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', " min-width: 200px; margin-right: 2em; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', " min-width: 200px; margin-right: 2em; ");
+    var DraftWineColumn = (function (_super) {
+        __extends(DraftWineColumn, _super);
+        function DraftWineColumn(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.draftsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Drafts' }), 'col-fill SpecialsListView_draftsList_style');
+            _this.winesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Wines' }), 'col-fill SpecialsListView_winesList_style');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' col';
+            _this.addBinding('draftsList', 'update', 'data.drafts');
+            _this.addBinding('winesList', 'update', 'data.wines');
+            return _this;
+        }
+        DraftWineColumn.prototype.init = function () {
+            var _this = this;
+            eventHub.on('isAdminModeChanged', function (isAdminMode) {
+                _this.draftsList.updateAdminMode(isAdminMode);
+                _this.winesList.updateAdminMode(isAdminMode);
+            });
         };
-        return Input;
-    }(__SyncNode_SyncView_1.SyncView));
-    exports.Input = Input;
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.input_input_style', "\n            flex: 1;\n            font-size: 1em;\n            padding: 0.5em 0;\n            background-color: transparent;\n            border: none;\n            border-bottom: 1px solid rgba(0,0,0,0.5);\n    ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n        left: 0; top: 0; right: 0; bottom: 0;\n    ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.PageAndPreview_style', " height: 100%; ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");
-    __SyncNode_SyncView_1.SyncView.addGlobalStyle('.Input_style', " \n        width: 100%;\n        display: flex; \n    ");
-    var app = new __SyncNode_SyncView_1.SyncApp(new MainView());
+        return DraftWineColumn;
+    }(SyncView_1.SyncView));
+    exports.DraftWineColumn = DraftWineColumn;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', " min-width: 200px; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_winesList_style', " min-width: 200px; margin-right: 2em; ");
+    var eventHub = new EventHub();
+    eventHub.init();
+    var app = new SyncView_1.SyncApp(new MainView());
     app.start();
-    new __SyncNode_SyncView_1.SyncReloader().start();
+    new SyncView_1.SyncReloader().start();
+    SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n        left: 0; top: 0; right: 0; bottom: 0;\n        color: #FFF;\n        background-color: #000;\n    ");
+    SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
+    SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
+    SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 57 */,
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(51)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SpecialsListView = (function (_super) {
+        __extends(SpecialsListView, _super);
+        function SpecialsListView(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.header = _this.addView(new Components_1.SimpleHeader({ title: 'Specials' }), ' SimpleHeader_header_style');
+            _this.addModal = _this.addView(new Components_1.Modal({ view: AddSpecialModal }), '');
+            _this.list = _this.addView(new SyncView_1.SyncList({ item: SpecialItemView }), '');
+            _this.editModal = _this.addView(new Components_1.Modal({ view: EditSpecialModal }), '');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' SpecialsListView_style';
+            _this.header.on('add', function () {
+                _this.addModal.show();
+            });
+            _this.addBinding('addModal', 'update', 'data');
+            _this.list.on('edit', function (view, data) {
+                _this.editModal.update(data);
+                _this.editModal.show();
+            });
+            _this.addBinding('list', 'update', 'data');
+            return _this;
+        }
+        SpecialsListView.prototype.updateAdminMode = function (val) {
+            this.header.showButtons(val);
+        };
+        SpecialsListView.prototype.init = function () {
+            this.header.title.innerHTML = this.options.title || 'Specials';
+            this.updateAdminMode(false);
+        };
+        return SpecialsListView;
+    }(SyncView_1.SyncView));
+    exports.SpecialsListView = SpecialsListView;
+    SyncView_1.SyncView.addGlobalStyle('.SimpleHeader_header_style', " padding-bottom: 1em; color: #AAA; ");
+    var SpecialItemView = (function (_super) {
+        __extends(SpecialItemView, _super);
+        function SpecialItemView(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.row1 = _this.addView(new SpecialItemViewRow1(), 'col-nofill SpecialItemViewRow1_row1_style');
+            _this.description = _this.add('span', { "innerHTML": "", "className": "col-fill span_description_style col-fill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' col hover-blue';
+            _this.el.className += ' SpecialItemView_style';
+            _this.el.addEventListener('click', _this.onClick.bind(_this));
+            _this.addBinding('row1', 'update', 'data');
+            _this.addBinding('description', 'innerHTML', 'data.description');
+            return _this;
+        }
+        SpecialItemView.prototype.onClick = function () { this.emit('edit', this.data); };
+        return SpecialItemView;
+    }(SyncView_1.SyncView));
+    exports.SpecialItemView = SpecialItemView;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_row1_style', " font-weight: bold; ");
+    SyncView_1.SyncView.addGlobalStyle('.span_description_style', " font-style: italic; padding-left: 1em; ");
+    var SpecialItemViewRow1 = (function (_super) {
+        __extends(SpecialItemViewRow1, _super);
+        function SpecialItemViewRow1(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill row-fill" });
+            _this.price = _this.add('span', { "innerHTML": "", "className": "row-nofill row-nofill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' row';
+            _this.el.className += ' SpecialItemViewRow1_style';
+            _this.addBinding('title', 'innerHTML', 'data.title');
+            _this.addBinding('price', 'innerHTML', 'data.price');
+            return _this;
+        }
+        return SpecialItemViewRow1;
+    }(SyncView_1.SyncView));
+    exports.SpecialItemViewRow1 = SpecialItemViewRow1;
+    var EditSpecialModal = (function (_super) {
+        __extends(EditSpecialModal, _super);
+        function EditSpecialModal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title' }), '');
+            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description' }), '');
+            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price' }), '');
+            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link' }), '');
+            _this.btnDelete = _this.add('button', { "innerHTML": "Delete", "className": "" });
+            _this.btnClose = _this.add('button', { "innerHTML": "Close", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' EditSpecialModal_style';
+            _this.addBinding('title', 'update', 'data');
+            _this.addBinding('description', 'update', 'data');
+            _this.addBinding('price', 'update', 'data');
+            _this.addBinding('link', 'update', 'data');
+            _this.btnDelete.addEventListener('click', function () {
+                if (confirm('Delete item?')) {
+                    _this.data.parent.remove(_this.data.key);
+                    _this.emit('hide');
+                }
+            });
+            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
+            return _this;
+        }
+        return EditSpecialModal;
+    }(SyncView_1.SyncView));
+    exports.EditSpecialModal = EditSpecialModal;
+    var AddSpecialModal = (function (_super) {
+        __extends(AddSpecialModal, _super);
+        function AddSpecialModal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title', twoway: false }), '');
+            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description', twoway: false }), '');
+            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price', twoway: false }), '');
+            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link', twoway: false }), '');
+            _this.btnAdd = _this.add('button', { "innerHTML": "Add", "className": "" });
+            _this.btnClose = _this.add('button', { "innerHTML": "Cancel", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' AddSpecialModal_style';
+            _this.addBinding('title', 'update', 'data');
+            _this.addBinding('description', 'update', 'data');
+            _this.addBinding('price', 'update', 'data');
+            _this.addBinding('link', 'update', 'data');
+            _this.btnAdd.addEventListener('click', function () {
+                var item = {
+                    title: _this.title.value(),
+                    description: _this.description.value(),
+                    price: _this.price.value(),
+                    link: _this.link.value()
+                };
+                _this.data.setItem(item);
+                _this.emit('hide');
+            });
+            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
+            return _this;
+        }
+        AddSpecialModal.prototype.init = function () { this.update({}); };
+        return AddSpecialModal;
+    }(SyncView_1.SyncView));
+    exports.AddSpecialModal = AddSpecialModal;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_style', " padding: 0 1em; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemView_style', " padding: 0.25em 0; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_style', " border-bottom: 1px dashed #999; ");
+    SyncView_1.SyncView.addGlobalStyle('.EditSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
+    SyncView_1.SyncView.addGlobalStyle('.AddSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

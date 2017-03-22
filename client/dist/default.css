@@ -21,6 +21,10 @@ h1,h2,h3 {
   width: 100%; 
 }
 
+.hover-blue:hover {
+	background-color: rgba(150,150,255, 0.85);
+}
+
 .row-nofill {
   flex: 0 0 auto; 
 }

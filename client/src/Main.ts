@@ -1,39 +1,50 @@
-import { SyncNode, SyncNodeSocket, SyncData } from "\\SyncNode\\SyncNode"
-import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from ".\\SyncNode\\SyncView"
+import { SyncNode, SyncNodeSocket, SyncData } from "./SyncNode/SyncNode"
+import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from "./SyncNode/SyncView"
 
 
-    import { parse, ProgNode, ChapterNode, PromptNode, PromptOptionNode, NextNode } from './parser';
+    import { MainData, PageData } from './Types'
+    import { Input } from './Components'
+    import { SpecialsListView } from './Specials'
+
+
     import * as smoothscroll from './lib/smoothscroll'
-
     smoothscroll.polyfill();
 
 
-    declare var CodeMirror: any;
 
-    export interface MainData extends SyncData {
-        pages: {[key: string]: PageData};
-    }
+export class EventHub extends SyncView<SyncData> {
 
-    export interface PageData extends SyncData {
-        title: string;
+        isAdminMode: boolean = false;
+    
+ 	constructor(options: any = {}) {
+		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
+		this.el.className += ' ';
+	}
+	toggleAdminMode() {
+        this.isAdminMode = !this.isAdminMode;
+        this.emit('isAdminModeChanged', this.isAdminMode);
     }
+	init() {
+        document.addEventListener('keypress', e => {
+			if(e.keyCode === 94) { // 94 = '^'
+				this.toggleAdminMode();
+			}
+		});
+    }
+}
 
 export class MainView extends SyncView<MainData> {
  
         selectedPage: PageData;
         isInited: boolean = false;
     
- 	pageList = this.addView(new PageList(), '');
-	editor = this.addView(new PageEditor(), '');
+ 	editor = this.addView(new PageEditor(), 'row-fill');
 	constructor(options: any = {}) {
 		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.el.className += ' MainView_style';
-		this.pageList.on('selected', (page: PageData) => { 
-            this.selectedPage = page;
-            this.editor.update(page);
-         });
-		this.addBinding('pageList', 'update', 'data.pages');
 	}
 	render() { 
         if(!this.data.pages) this.data.set('pages', {});
@@ -57,6 +68,7 @@ export class PageList extends SyncView<SyncData> {
 	itemList = this.addView(new SyncList({ item: PageItem }), ' SyncList_itemList_style');
 	constructor(options: any = {}) {
 		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row-nofill';
 		this.el.className += ' PageList_style';
 		this.hideDrawer.addEventListener('click', () => { 
@@ -66,7 +78,12 @@ export class PageList extends SyncView<SyncData> {
          });
 		this.addBtn.addEventListener('click', () => { 
             let page = {
-                title: 'New Page'
+                title: 'New Page',
+                specials: {},
+                wines: {},
+                cocktails: {},
+                drafts: {},
+                bottles: {}
             } as PageData;
             this.data.setItem(page)
          });
@@ -82,6 +99,7 @@ export class PageItem extends SyncView<SyncData> {
 	title = this.add('span', {"innerHTML":"","className":""});
 	constructor(options: any = {}) {
 		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' ';
 		this.el.className += ' PageItem_style';
 		this.el.addEventListener('click', this.onClick.bind(this));
@@ -93,11 +111,12 @@ export class PageItem extends SyncView<SyncData> {
 }
 
 export class PageEditorControls extends SyncView<SyncData> {
-	title = this.addView(new Input({ twoway: true, label: 'Title', key: 'title' }), '');
-	fill = this.add('div', {"innerHTML":"","className":" row-fill"});
-	delBtn = this.add('button', {"innerHTML":"Delete Page","className":" row-nofill"});
+	title = this.addView(new Input({ twoway: true, label: 'Title', key: 'title' }), 'row-nofill Input_title_style');
+	fill = this.add('div', {"innerHTML":"","className":"row-fill row-fill"});
+	delBtn = this.add('button', {"innerHTML":"Delete Page","className":"row-nofill row-nofill"});
 	constructor(options: any = {}) {
 		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.addBinding('title', 'update', 'data');
 		this.delBtn.addEventListener('click', () => {  
@@ -108,27 +127,15 @@ export class PageEditorControls extends SyncView<SyncData> {
 	}
 }
 
-export class PageAndPreview extends SyncView<PageData> {
- 
-        saveHandle: number; 
-        cm: any;
-    
- 	constructor(options: any = {}) {
-		super(options);
-		this.el.className += ' row';
-		this.el.className += ' PageAndPreview_style';
-	}
-}
-
-export class PageEditor extends SyncView<SyncData> {
-	controls = this.addView(new PageEditorControls(), ' PageEditorControls_controls_style');
-	pageAndPreview = this.addView(new PageAndPreview(), '');
+SyncView.addGlobalStyle('.Input_title_style', ` width: 350px; `);
+export class PageEditor extends SyncView<PageData> {
+	cols = this.addView(new PageEditorColumns(), 'col-fill');
 	constructor(options: any = {}) {
 		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row-fill col';
 		this.el.className += ' PageEditor_style';
-		this.addBinding('controls', 'update', 'data');
-		this.addBinding('pageAndPreview', 'update', 'data');
+		this.addBinding('cols', 'update', 'data');
 	}
 	render() {
         if(this.data) this.show();
@@ -136,40 +143,67 @@ export class PageEditor extends SyncView<SyncData> {
     }
 }
 
-SyncView.addGlobalStyle('.PageEditorControls_controls_style', ` padding-bottom: 1em; `);
-export class Input extends SyncView<SyncData> {
-	input = this.add('input', {"innerHTML":"","className":" input_input_style"});
+export class PageEditorColumns extends SyncView<SyncData> {
+	specialsList = this.addView(new SpecialsListView({title: 'Specials'}), 'row-fill SpecialsListView_specialsList_style');
+	cocktailsList = this.addView(new SpecialsListView({title: 'Cocktails'}), 'row-fill SpecialsListView_cocktailsList_style');
+	draftWineColumn = this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
+	bottlesList = this.addView(new SpecialsListView({title: 'Bottles'}), 'row-fill SpecialsListView_bottlesList_style');
 	constructor(options: any = {}) {
 		super(options);
-		this.el.className += ' ';
-		this.el.className += ' Input_style';
-		this.el.addEventListener('change', this.onChange.bind(this));
+		this.options = SyncUtils.mergeMap({}, options);
+		this.el.className += ' row';
+		this.addBinding('specialsList', 'update', 'data.specials');
+		this.addBinding('cocktailsList', 'update', 'data.cocktails');
+		this.addBinding('draftWineColumn', 'update', 'data');
+		this.addBinding('bottlesList', 'update', 'data.bottles');
 	}
-	onChange() { 
-        let val = this.input.value;
-        if(this.options.twoway && this.options.key) {
-            this.data.set(this.options.key, val);
-        }
-        this.emit('change', val); 
-    }
-	render() {		
-        if(this.data) {
-            this.input.value = this.options.key ? this.data.get(this.options.key) : this.data;
-        }
+	init() {
+        eventHub.on('isAdminModeChanged', (isAdminMode) => {
+            this.specialsList.updateAdminMode(isAdminMode);
+            this.cocktailsList.updateAdminMode(isAdminMode);
+            this.bottlesList.updateAdminMode(isAdminMode);
+        });
     }
 }
 
-SyncView.addGlobalStyle('.input_input_style', `
-            flex: 1;
-            font-size: 1em;
-            padding: 0.5em 0;
-            background-color: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(0,0,0,0.5);
-    `);
+SyncView.addGlobalStyle('.SpecialsListView_specialsList_style', ` min-width: 200px; margin-right: 2em; `);
+SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', ` min-width: 200px; margin-right: 2em; `);
+SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', ` min-width: 200px; margin-right: 2em; `);
+SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', ` min-width: 200px; margin-right: 2em; `);
+export class DraftWineColumn extends SyncView<SyncData> {
+	draftsList = this.addView(new SpecialsListView({title: 'Drafts'}), 'col-fill SpecialsListView_draftsList_style');
+	winesList = this.addView(new SpecialsListView({title: 'Wines'}), 'col-fill SpecialsListView_winesList_style');
+	constructor(options: any = {}) {
+		super(options);
+		this.options = SyncUtils.mergeMap({}, options);
+		this.el.className += ' col';
+		this.addBinding('draftsList', 'update', 'data.drafts');
+		this.addBinding('winesList', 'update', 'data.wines');
+	}
+	init() {
+        eventHub.on('isAdminModeChanged', (isAdminMode) => {
+            this.draftsList.updateAdminMode(isAdminMode);
+            this.winesList.updateAdminMode(isAdminMode);
+        });
+    }
+}
+
+SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', ` min-width: 200px; `);
+SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px; margin-right: 2em; `);
+
+
+    let eventHub = new EventHub();
+    eventHub.init();
+    let app = new SyncApp<SyncData>(new MainView());
+    app.start();
+
+    new SyncReloader().start();
+
 SyncView.addGlobalStyle('.MainView_style', ` 
         position: absolute;
         left: 0; top: 0; right: 0; bottom: 0;
+        color: #FFF;
+        background-color: #000;
     `);
 SyncView.addGlobalStyle('.PageList_style', `
         border-right: 1px solid #BBB;
@@ -183,16 +217,6 @@ SyncView.addGlobalStyle('.PageItem_style', `
         width: 100%; 
         border: 1px solid #DDD;
         `);
-SyncView.addGlobalStyle('.PageAndPreview_style', ` height: 100%; `);
 SyncView.addGlobalStyle('.PageEditor_style', `
         padding: 1em;
     `);
-SyncView.addGlobalStyle('.Input_style', ` 
-        width: 100%;
-        display: flex; 
-    `);
-
-let app = new SyncApp<SyncData>(new MainView());
-app.start();
-
-new SyncReloader().start();

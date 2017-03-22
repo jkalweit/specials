@@ -25,6 +25,7 @@ export class SyncView<T extends SyncData> extends SyncNodeEventEmitter {
 	el: HTMLElement;
 	data: T;
 	bindings: any;
+	defaultDisplay: string = 'block';
 	__currentDataVersion: string | undefined;
 
 	constructor(options: any = {}) {
@@ -105,13 +106,10 @@ export class SyncView<T extends SyncData> extends SyncNodeEventEmitter {
 		});
 	}
 	show() { 
-		this.el.style.display = (this.el.style as any).display_old || 'block'; 
+		this.el.style.display = '';
 	}
 	hide() { 
-		if(this.el.style.display !== 'none') {
-			(this.el.style as any).display_old = this.el.style.display;
-			this.el.style.display = 'none'; 
-		}
+		this.el.style.display = 'none'; 
 	}
 	render() {
 	}
@@ -146,8 +144,8 @@ export class SyncUtils {
 		if (obj == null) return null;
 		return SyncUtils.getPropertyHelper(obj[split[0]], split.slice(1, split.length));
 	}
-	static mergeMap(destination: any, source: any) {
-		destination = destination || {};
+	static mergeMap(destination: any, source: any): any {
+		destination = JSON.parse(JSON.stringify(destination || {})); // make a copy
 		Object.keys(source || {}).forEach((key) => {
 			destination[key] = source[key];
 		});
