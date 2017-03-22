@@ -1,0 +1,87 @@
+{
+import { SpecialItemData } from './Types'
+import { Input, Modal, SimpleHeader } from './Components'
+}
+
+SpecialsListView
+    .style { padding: 0 1em; }
+    #header:SimpleHeader({ title: 'Specials' })
+        .style { padding-bottom: 1em; color: #AAA; }
+        onAdd() {
+            this.addModal.show();
+        }
+    #addModal:Modal({ view: AddSpecialModal }) $data
+    #list:SyncList({ item: SpecialItemView }) $data
+        onEdit(view: SpecialItemView, data: SpecialItemData) {
+            this.editModal.update(data);
+            this.editModal.show(); 
+        }
+    #editModal:Modal({ view: EditSpecialModal })
+    updateAdminMode(val: boolean) {
+        this.header.showButtons(val);
+    }
+    init() {
+        this.header.title.innerHTML = this.options.title || 'Specials';
+        this.updateAdminMode(false);
+    }
+
+SpecialItemView<SpecialItemData>[col hover-blue]
+    .style { padding: 0.25em 0; }
+    #row1:SpecialItemViewRow1[col-nofill] $data
+        .style { font-weight: bold; }
+    #description:span[col-fill] $data.description
+        .style { font-style: italic; padding-left: 1em; }
+    onClick() { this.emit('edit', this.data); }
+
+SpecialItemViewRow1<SpecialItemData>[row]
+    .style { border-bottom: 1px dashed #999; }
+    #title:span[row-fill] $data.title
+    #price:span[row-nofill] $data.price
+
+
+EditSpecialModal
+    .style {
+        background-color: #FFF;
+        width: 500px;
+        padding: 1em;
+    }
+    #title:Input({ label: 'Name', key: 'title' }) $data
+    #description:Input({ label: 'Description', key: 'description' }) $data
+    #price:Input({ label: 'Price', key: 'price' }) $data
+    #link:Input({ label: 'Link', key: 'link' }) $data
+    #btnDelete:button 'Delete' onClick() { 
+        if(confirm('Delete item?')) {
+            this.data.parent.remove(this.data.key);
+            this.emit('hide');
+        }
+     }
+    #btnClose:button 'Close' onClick() { this.emit('hide'); }
+
+
+
+AddSpecialModal
+    .style {
+        background-color: #FFF;
+        width: 500px;
+        padding: 1em;
+    }
+    #title:Input({ label: 'Name', key: 'title', twoway: false }) $data
+    #description:Input({ label: 'Description', key: 'description', twoway: false }) $data
+    #price:Input({ label: 'Price', key: 'price', twoway: false }) $data
+    #link:Input({ label: 'Link', key: 'link', twoway: false }) $data
+    #btnAdd:button 'Add' 
+        onClick() {
+            let item = {
+               title: this.title.value(),
+               description: this.description.value(),
+               price: this.price.value(),
+               link: this.link.value()
+            } as SpecialItemData;
+            (this.data as SyncData).setItem(item);
+            this.emit('hide');
+        }
+    #btnClose:button 'Cancel' onClick() { this.emit('hide'); }
+    init() { this.update({} as SyncData); }
+
+
+
