@@ -3,11 +3,8 @@
     import { Input } from './Components'
     import { SpecialsListView } from './Specials'
 
-
     import * as smoothscroll from './lib/smoothscroll'
     smoothscroll.polyfill();
-
-
 }
 
 EventHub
@@ -35,7 +32,7 @@ MainView<MainData>[row]
     .style { 
         position: absolute;
         left: 0; top: 0; right: 0; bottom: 0;
-        color: #FFF;
+        color: #F00;
         background-color: #000;
     }
     /*
@@ -76,7 +73,7 @@ PageList[row-nofill]
             this.el.style.width = this.isClosed ? '50px' : '200px';
             this.hideDrawer.innerHTML = this.isClosed ? '>' : '<';
         }
-    #title:h1 'Pages'
+    #title:h1 'Pages32'
     #addBtn:button 'Add Page' 
         .style { width: 100%; }
         onClick() {

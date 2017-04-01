@@ -1,16 +1,13 @@
-import { SyncNode, SyncNodeSocket, SyncData } from "./SyncNode/SyncNode"
-import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from "./SyncNode/SyncView"
+import { SyncNode, SyncNodeSocket, SyncData } from "c:\\websites\\svml\\test-app\\app\\client\\src\\SyncNode\\SyncNode"
+import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from ".\\SyncNode\\SyncView"
 
 
     import { MainData, PageData } from './Types'
     import { Input } from './Components'
     import { SpecialsListView } from './Specials'
 
-
     import * as smoothscroll from './lib/smoothscroll'
     smoothscroll.polyfill();
-
-
 
 export class EventHub extends SyncView<SyncData> {
 
@@ -18,7 +15,6 @@ export class EventHub extends SyncView<SyncData> {
     
  	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' ';
 	}
 	toggleAdminMode() {
@@ -39,10 +35,9 @@ export class MainView extends SyncView<MainData> {
         selectedPage: PageData;
         isInited: boolean = false;
     
- 	editor = this.addView(new PageEditor(), 'row-fill');
+ 	editor = this.addView(new PageEditor(), '');
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.el.className += ' MainView_style';
 	}
@@ -63,12 +58,11 @@ export class PageList extends SyncView<SyncData> {
         isClosed: boolean = false;
     
  	hideDrawer = this.add('button', {"innerHTML":"<","className":" button_hideDrawer_style"});
-	title = this.add('h1', {"innerHTML":"Pages","className":""});
+	title = this.add('h1', {"innerHTML":"Pages32","className":""});
 	addBtn = this.add('button', {"innerHTML":"Add Page","className":" button_addBtn_style"});
 	itemList = this.addView(new SyncList({ item: PageItem }), ' SyncList_itemList_style');
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row-nofill';
 		this.el.className += ' PageList_style';
 		this.hideDrawer.addEventListener('click', () => { 
@@ -99,7 +93,6 @@ export class PageItem extends SyncView<SyncData> {
 	title = this.add('span', {"innerHTML":"","className":""});
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' ';
 		this.el.className += ' PageItem_style';
 		this.el.addEventListener('click', this.onClick.bind(this));
@@ -111,12 +104,11 @@ export class PageItem extends SyncView<SyncData> {
 }
 
 export class PageEditorControls extends SyncView<SyncData> {
-	title = this.addView(new Input({ twoway: true, label: 'Title', key: 'title' }), 'row-nofill Input_title_style');
-	fill = this.add('div', {"innerHTML":"","className":"row-fill row-fill"});
-	delBtn = this.add('button', {"innerHTML":"Delete Page","className":"row-nofill row-nofill"});
+	title = this.addView(new Input({ twoway: true, label: 'Title', key: 'title' }), ' Input_title_style');
+	fill = this.add('div', {"innerHTML":"","className":" row-fill"});
+	delBtn = this.add('button', {"innerHTML":"Delete Page","className":" row-nofill"});
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.addBinding('title', 'update', 'data');
 		this.delBtn.addEventListener('click', () => {  
@@ -129,10 +121,9 @@ export class PageEditorControls extends SyncView<SyncData> {
 
 SyncView.addGlobalStyle('.Input_title_style', ` width: 350px; `);
 export class PageEditor extends SyncView<PageData> {
-	cols = this.addView(new PageEditorColumns(), 'col-fill');
+	cols = this.addView(new PageEditorColumns(), '');
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row-fill col';
 		this.el.className += ' PageEditor_style';
 		this.addBinding('cols', 'update', 'data');
@@ -144,13 +135,12 @@ export class PageEditor extends SyncView<PageData> {
 }
 
 export class PageEditorColumns extends SyncView<SyncData> {
-	specialsList = this.addView(new SpecialsListView({title: 'Specials'}), 'row-fill SpecialsListView_specialsList_style');
-	cocktailsList = this.addView(new SpecialsListView({title: 'Cocktails'}), 'row-fill SpecialsListView_cocktailsList_style');
-	draftWineColumn = this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
-	bottlesList = this.addView(new SpecialsListView({title: 'Bottles'}), 'row-fill SpecialsListView_bottlesList_style');
+	specialsList = this.addView(new SpecialsListView({title: 'Specials'}), ' SpecialsListView_specialsList_style');
+	cocktailsList = this.addView(new SpecialsListView({title: 'Cocktails'}), ' SpecialsListView_cocktailsList_style');
+	draftWineColumn = this.addView(new DraftWineColumn(), ' DraftWineColumn_draftWineColumn_style');
+	bottlesList = this.addView(new SpecialsListView({title: 'Bottles'}), ' SpecialsListView_bottlesList_style');
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.addBinding('specialsList', 'update', 'data.specials');
 		this.addBinding('cocktailsList', 'update', 'data.cocktails');
@@ -171,11 +161,10 @@ SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', ` min-width: 20
 SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', ` min-width: 200px; margin-right: 2em; `);
 SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', ` min-width: 200px; margin-right: 2em; `);
 export class DraftWineColumn extends SyncView<SyncData> {
-	draftsList = this.addView(new SpecialsListView({title: 'Drafts'}), 'col-fill SpecialsListView_draftsList_style');
-	winesList = this.addView(new SpecialsListView({title: 'Wines'}), 'col-fill SpecialsListView_winesList_style');
+	draftsList = this.addView(new SpecialsListView({title: 'Drafts'}), ' SpecialsListView_draftsList_style');
+	winesList = this.addView(new SpecialsListView({title: 'Wines'}), ' SpecialsListView_winesList_style');
 	constructor(options: any = {}) {
 		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' col';
 		this.addBinding('draftsList', 'update', 'data.drafts');
 		this.addBinding('winesList', 'update', 'data.wines');
@@ -190,19 +179,10 @@ export class DraftWineColumn extends SyncView<SyncData> {
 
 SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', ` min-width: 200px; `);
 SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px; margin-right: 2em; `);
-
-
-    let eventHub = new EventHub();
-    eventHub.init();
-    let app = new SyncApp<SyncData>(new MainView());
-    app.start();
-
-    new SyncReloader().start();
-
 SyncView.addGlobalStyle('.MainView_style', ` 
         position: absolute;
         left: 0; top: 0; right: 0; bottom: 0;
-        color: #FFF;
+        color: #F00;
         background-color: #000;
     `);
 SyncView.addGlobalStyle('.PageList_style', `
@@ -220,3 +200,8 @@ SyncView.addGlobalStyle('.PageItem_style', `
 SyncView.addGlobalStyle('.PageEditor_style', `
         padding: 1em;
     `);
+
+let app = new SyncApp<SyncData>(new MainView());
+app.start();
+
+new SyncReloader().start();
