@@ -9965,7 +9965,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"SyncNode/syncnode\""); e.code = 'MODULE_NOT_FOUND';; throw e; }())], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, syncnode_1) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(52)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var CastReceiver = (function (_super) {
@@ -10009,7 +10009,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             };
         };
         return CastReceiver;
-    }(syncnode_1.SyncNodeEventEmitter));
+    }(SyncNode_1.SyncNodeEventEmitter));
     exports.CastReceiver = CastReceiver;
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
