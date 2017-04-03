@@ -7,6 +7,7 @@
     smoothscroll.polyfill();
 }
 
+
 EventHub
     @{
         isAdminMode: boolean = false;
@@ -32,7 +33,7 @@ MainView<MainData>[row]
     .style { 
         position: absolute;
         left: 0; top: 0; right: 0; bottom: 0;
-        color: #F00;
+        color: #FFF;
         background-color: #000;
     }
     /*
@@ -146,7 +147,7 @@ DraftWineColumn[col]
     #winesList:SpecialsListView({title: 'Wines'})[col-fill] $data.wines
         .style { min-width: 200px; margin-right: 2em; }
     init() {
-        eventHub.on('isAdminModeChanged', (isAdminMode) => {
+        eventHub.on('isAdminModeChanged', (isAdminMode: boolean) => {
             this.draftsList.updateAdminMode(isAdminMode);
             this.winesList.updateAdminMode(isAdminMode);
         });
@@ -154,7 +155,6 @@ DraftWineColumn[col]
 
 
 {
-
     let eventHub = new EventHub();
     eventHub.init();
     let app = new SyncApp<SyncData>(new MainView());

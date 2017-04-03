@@ -104,7 +104,7 @@ module.exports = g;
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(30);
+exports = module.exports = __webpack_require__(31);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -275,7 +275,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)))
 
 /***/ }),
 /* 2 */
@@ -285,15 +285,15 @@ function localstorage(){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(37);
-var hasBinary = __webpack_require__(13);
-var sliceBuffer = __webpack_require__(26);
-var after = __webpack_require__(25);
+var keys = __webpack_require__(38);
+var hasBinary = __webpack_require__(14);
+var sliceBuffer = __webpack_require__(27);
+var after = __webpack_require__(26);
 var utf8 = __webpack_require__(54);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(28);
+  base64encoder = __webpack_require__(29);
 }
 
 /**
@@ -351,7 +351,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(29);
+var Blob = __webpack_require__(30);
 
 /**
  * Encodes a packet.
@@ -1644,7 +1644,7 @@ Transport.prototype.onClose = function () {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(38);
+var hasCORS = __webpack_require__(39);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -1734,11 +1734,11 @@ exports.decode = function(qs){
  * Module dependencies.
  */
 
-var debug = __webpack_require__(47)('socket.io-parser');
-var json = __webpack_require__(39);
-var Emitter = __webpack_require__(46);
-var binary = __webpack_require__(45);
-var isBuf = __webpack_require__(20);
+var debug = __webpack_require__(48)('socket.io-parser');
+var json = __webpack_require__(40);
+var Emitter = __webpack_require__(47);
+var binary = __webpack_require__(46);
+var isBuf = __webpack_require__(21);
 
 /**
  * Protocol version.
@@ -2137,6 +2137,128 @@ function error(data){
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Input = (function (_super) {
+        __extends(Input, _super);
+        function Input(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.label = _this.add('span', { "innerHTML": "", "className": "" });
+            _this.input = _this.add('input', { "innerHTML": "", "className": " input_input_style" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({ twoway: true, labelWidth: '100px' }, options);
+            _this.el.className += ' ';
+            _this.el.className += ' Input_style';
+            _this.el.addEventListener('change', _this.onChange.bind(_this));
+            return _this;
+        }
+        Input.prototype.onChange = function () {
+            var val = this.input.value;
+            if (this.options.twoway && this.options.key) {
+                this.data.set(this.options.key, val);
+            }
+            this.emit('change', val);
+        };
+        Input.prototype.value = function () {
+            return this.input.value;
+        };
+        Input.prototype.init = function () {
+            this.label.style.width = this.options.labelWidth;
+        };
+        Input.prototype.render = function () {
+            if (this.options.label) {
+                this.label.innerHTML = this.options.label;
+            }
+            this.label.style.display = this.options.label ? 'flex' : 'none';
+            if (this.data) {
+                this.input.value = this.options.key ? this.data.get(this.options.key) || '' : this.data || '';
+            }
+        };
+        return Input;
+    }(SyncView_1.SyncView));
+    exports.Input = Input;
+    SyncView_1.SyncView.addGlobalStyle('.input_input_style', "\n            flex: 1;\n            font-size: 1em;\n            padding: 0.5em 0;\n            background-color: transparent;\n            border: none;\n            border-bottom: 1px solid rgba(0,0,0,0.5);\n    ");
+    var Modal = (function (_super) {
+        __extends(Modal, _super);
+        function Modal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.viewContainer = _this.add('div', { "innerHTML": "", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({ hideOnClick: true }, options);
+            _this.el.className += ' ';
+            _this.el.className += ' Modal_style';
+            _this.el.addEventListener('click', _this.onClick.bind(_this));
+            _this.viewContainer.addEventListener('click', function (e) { e.stopPropagation(); });
+            return _this;
+        }
+        Modal.prototype.onClick = function () { if (this.options.hideOnClick) {
+            this.hide();
+        } };
+        Modal.prototype.init = function () {
+            this.hide();
+            if (this.options.view) {
+                this.view = new this.options.view();
+                var _me = this;
+                var handler = function (eventName) {
+                    if (eventName === 'hide') {
+                        _me.hide();
+                    }
+                    _me.emit.apply(_me, arguments);
+                };
+                this.view.onAny(handler.bind(this));
+                this.viewContainer.appendChild(this.view.el);
+            }
+        };
+        Modal.prototype.render = function () {
+            if (this.view)
+                this.view.update(this.data);
+        };
+        return Modal;
+    }(SyncView_1.SyncView));
+    exports.Modal = Modal;
+    var SimpleHeader = (function (_super) {
+        __extends(SimpleHeader, _super);
+        function SimpleHeader(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill span_title_style row-fill" });
+            _this.addBtn = _this.add('button', { "innerHTML": "Add", "className": "row-nofill row-nofill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' row';
+            _this.addBtn.addEventListener('click', function () { _this.emit('add'); });
+            return _this;
+        }
+        SimpleHeader.prototype.showButtons = function (val) {
+            this.addBtn.style.display = val ? 'flex' : 'none';
+        };
+        SimpleHeader.prototype.init = function () {
+            this.title.innerHTML = this.options.title;
+        };
+        return SimpleHeader;
+    }(SyncView_1.SyncView));
+    exports.SimpleHeader = SimpleHeader;
+    SyncView_1.SyncView.addGlobalStyle('.span_title_style', " \n            font-weight: bold; \n            font-size: 1.5em;\n        ");
+    SyncView_1.SyncView.addGlobalStyle('.Input_style', " \n        width: 100%;\n        display: flex; \n    ");
+    SyncView_1.SyncView.addGlobalStyle('.Modal_style', " \n        position: fixed;\n        left: 0; right: 0; top: 0; bottom: 0;\n        background-color: rgba(0,0,0,0.7);\n        overflow-y: scroll;\n        display: flex;\n        align-items: center;\n        justify-content: center;\t\n    ");
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 /**
@@ -2165,7 +2287,7 @@ module.exports = function(obj, fn){
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -2173,9 +2295,9 @@ module.exports = function(obj, fn){
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var XHR = __webpack_require__(35);
-var JSONP = __webpack_require__(34);
-var websocket = __webpack_require__(36);
+var XHR = __webpack_require__(36);
+var JSONP = __webpack_require__(35);
+var websocket = __webpack_require__(37);
 
 /**
  * Export transports.
@@ -2225,7 +2347,7 @@ function polling (opts) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -2236,7 +2358,7 @@ var Transport = __webpack_require__(6);
 var parseqs = __webpack_require__(8);
 var parser = __webpack_require__(2);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(22);
+var yeast = __webpack_require__(23);
 var debug = __webpack_require__(1)('engine.io-client:polling');
 
 /**
@@ -2476,7 +2598,7 @@ Polling.prototype.uri = function () {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -2484,7 +2606,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(15);
+var isArray = __webpack_require__(16);
 
 /**
  * Module exports.
@@ -2542,7 +2664,7 @@ function hasBinary(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 
@@ -2557,7 +2679,7 @@ module.exports = function(arr, obj){
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = Array.isArray || function (arr) {
@@ -2566,7 +2688,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /**
@@ -2611,7 +2733,7 @@ module.exports = function parseuri(str) {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -2619,15 +2741,15 @@ module.exports = function parseuri(str) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(31);
-var Socket = __webpack_require__(19);
+var eio = __webpack_require__(32);
+var Socket = __webpack_require__(20);
 var Emitter = __webpack_require__(3);
 var parser = __webpack_require__(9);
-var on = __webpack_require__(18);
-var bind = __webpack_require__(10);
+var on = __webpack_require__(19);
+var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:manager');
-var indexOf = __webpack_require__(14);
-var Backoff = __webpack_require__(27);
+var indexOf = __webpack_require__(15);
+var Backoff = __webpack_require__(28);
 
 /**
  * IE6+ hasOwnProperty
@@ -3177,7 +3299,7 @@ Manager.prototype.onreconnect = function () {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 
@@ -3207,7 +3329,7 @@ function on (obj, ev, fn) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -3217,11 +3339,11 @@ function on (obj, ev, fn) {
 
 var parser = __webpack_require__(9);
 var Emitter = __webpack_require__(3);
-var toArray = __webpack_require__(50);
-var on = __webpack_require__(18);
-var bind = __webpack_require__(10);
+var toArray = __webpack_require__(51);
+var on = __webpack_require__(19);
+var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:socket');
-var hasBin = __webpack_require__(13);
+var hasBin = __webpack_require__(14);
 
 /**
  * Module exports.
@@ -3632,7 +3754,7 @@ Socket.prototype.compress = function (compress) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -3652,7 +3774,7 @@ function isBuf(obj) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -3680,7 +3802,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3755,7 +3877,7 @@ module.exports = yeast;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4092,8 +4214,170 @@ module.exports = yeast;
 
 
 /***/ }),
-/* 24 */,
 /* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SpecialsListView = (function (_super) {
+        __extends(SpecialsListView, _super);
+        function SpecialsListView(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.header = _this.addView(new Components_1.SimpleHeader({ title: 'Specials' }), ' SimpleHeader_header_style');
+            _this.addModal = _this.addView(new Components_1.Modal({ view: AddSpecialModal }), '');
+            _this.list = _this.addView(new SyncView_1.SyncList({ item: SpecialItemView }), '');
+            _this.editModal = _this.addView(new Components_1.Modal({ view: EditSpecialModal }), '');
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' SpecialsListView_style';
+            _this.header.on('add', function () {
+                _this.addModal.show();
+            });
+            _this.addBinding('addModal', 'update', 'data');
+            _this.list.on('edit', function (view, data) {
+                _this.editModal.update(data);
+                _this.editModal.show();
+            });
+            _this.addBinding('list', 'update', 'data');
+            return _this;
+        }
+        SpecialsListView.prototype.updateAdminMode = function (val) {
+            this.header.showButtons(val);
+        };
+        SpecialsListView.prototype.init = function () {
+            this.header.title.innerHTML = this.options.title || 'Specials';
+            this.updateAdminMode(false);
+        };
+        return SpecialsListView;
+    }(SyncView_1.SyncView));
+    exports.SpecialsListView = SpecialsListView;
+    SyncView_1.SyncView.addGlobalStyle('.SimpleHeader_header_style', " padding-bottom: 1em; color: #AAA; ");
+    var SpecialItemView = (function (_super) {
+        __extends(SpecialItemView, _super);
+        function SpecialItemView(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.row1 = _this.addView(new SpecialItemViewRow1(), 'col-nofill SpecialItemViewRow1_row1_style');
+            _this.description = _this.add('span', { "innerHTML": "", "className": "col-fill span_description_style col-fill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' col hover-blue';
+            _this.el.className += ' SpecialItemView_style';
+            _this.el.addEventListener('click', _this.onClick.bind(_this));
+            _this.addBinding('row1', 'update', 'data');
+            _this.addBinding('description', 'innerHTML', 'data.description');
+            return _this;
+        }
+        SpecialItemView.prototype.onClick = function () { this.emit('edit', this.data); };
+        return SpecialItemView;
+    }(SyncView_1.SyncView));
+    exports.SpecialItemView = SpecialItemView;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_row1_style', " font-weight: bold; ");
+    SyncView_1.SyncView.addGlobalStyle('.span_description_style', " font-style: italic; padding-left: 1em; ");
+    var SpecialItemViewRow1 = (function (_super) {
+        __extends(SpecialItemViewRow1, _super);
+        function SpecialItemViewRow1(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill row-fill" });
+            _this.price = _this.add('span', { "innerHTML": "", "className": "row-nofill row-nofill" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' row';
+            _this.el.className += ' SpecialItemViewRow1_style';
+            _this.addBinding('title', 'innerHTML', 'data.title');
+            _this.addBinding('price', 'innerHTML', 'data.price');
+            return _this;
+        }
+        return SpecialItemViewRow1;
+    }(SyncView_1.SyncView));
+    exports.SpecialItemViewRow1 = SpecialItemViewRow1;
+    var EditSpecialModal = (function (_super) {
+        __extends(EditSpecialModal, _super);
+        function EditSpecialModal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title' }), '');
+            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description' }), '');
+            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price' }), '');
+            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link' }), '');
+            _this.btnDelete = _this.add('button', { "innerHTML": "Delete", "className": "" });
+            _this.btnClose = _this.add('button', { "innerHTML": "Close", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' EditSpecialModal_style';
+            _this.addBinding('title', 'update', 'data');
+            _this.addBinding('description', 'update', 'data');
+            _this.addBinding('price', 'update', 'data');
+            _this.addBinding('link', 'update', 'data');
+            _this.btnDelete.addEventListener('click', function () {
+                if (confirm('Delete item?')) {
+                    _this.data.parent.remove(_this.data.key);
+                    _this.emit('hide');
+                }
+            });
+            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
+            return _this;
+        }
+        return EditSpecialModal;
+    }(SyncView_1.SyncView));
+    exports.EditSpecialModal = EditSpecialModal;
+    var AddSpecialModal = (function (_super) {
+        __extends(AddSpecialModal, _super);
+        function AddSpecialModal(options) {
+            if (options === void 0) { options = {}; }
+            var _this = _super.call(this, options) || this;
+            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title', twoway: false }), '');
+            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description', twoway: false }), '');
+            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price', twoway: false }), '');
+            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link', twoway: false }), '');
+            _this.btnAdd = _this.add('button', { "innerHTML": "Add", "className": "" });
+            _this.btnClose = _this.add('button', { "innerHTML": "Cancel", "className": "" });
+            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
+            _this.el.className += ' ';
+            _this.el.className += ' AddSpecialModal_style';
+            _this.addBinding('title', 'update', 'data');
+            _this.addBinding('description', 'update', 'data');
+            _this.addBinding('price', 'update', 'data');
+            _this.addBinding('link', 'update', 'data');
+            _this.btnAdd.addEventListener('click', function () {
+                var item = {
+                    title: _this.title.value(),
+                    description: _this.description.value(),
+                    price: _this.price.value(),
+                    link: _this.link.value()
+                };
+                _this.data.setItem(item);
+                _this.emit('hide');
+            });
+            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
+            return _this;
+        }
+        AddSpecialModal.prototype.init = function () { this.update({}); };
+        return AddSpecialModal;
+    }(SyncView_1.SyncView));
+    exports.AddSpecialModal = AddSpecialModal;
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_style', " padding: 0 1em; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemView_style', " padding: 0.25em 0; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_style', " border-bottom: 1px dashed #999; ");
+    SyncView_1.SyncView.addGlobalStyle('.EditSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
+    SyncView_1.SyncView.addGlobalStyle('.AddSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -4127,7 +4411,7 @@ function noop() {}
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /**
@@ -4162,7 +4446,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 
@@ -4253,7 +4537,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /*
@@ -4326,7 +4610,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4429,7 +4713,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -4445,7 +4729,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(40);
+exports.humanize = __webpack_require__(41);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -4635,19 +4919,19 @@ function coerce(val) {
 
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(32);
-
-
-/***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 module.exports = __webpack_require__(33);
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(34);
 
 /**
  * Exports parser
@@ -4659,20 +4943,20 @@ module.exports.parser = __webpack_require__(2);
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * Module dependencies.
  */
 
-var transports = __webpack_require__(11);
+var transports = __webpack_require__(12);
 var Emitter = __webpack_require__(3);
 var debug = __webpack_require__(1)('engine.io-client:socket');
-var index = __webpack_require__(14);
+var index = __webpack_require__(15);
 var parser = __webpack_require__(2);
-var parseuri = __webpack_require__(16);
-var parsejson = __webpack_require__(41);
+var parseuri = __webpack_require__(17);
+var parsejson = __webpack_require__(42);
 var parseqs = __webpack_require__(8);
 
 /**
@@ -4806,7 +5090,7 @@ Socket.protocol = parser.protocol; // this is an int
 
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(6);
-Socket.transports = __webpack_require__(11);
+Socket.transports = __webpack_require__(12);
 Socket.parser = __webpack_require__(2);
 
 /**
@@ -5404,7 +5688,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -5412,7 +5696,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
  * Module requirements.
  */
 
-var Polling = __webpack_require__(12);
+var Polling = __webpack_require__(13);
 var inherit = __webpack_require__(4);
 
 /**
@@ -5642,7 +5926,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5650,7 +5934,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var Polling = __webpack_require__(12);
+var Polling = __webpack_require__(13);
 var Emitter = __webpack_require__(3);
 var inherit = __webpack_require__(4);
 var debug = __webpack_require__(1)('engine.io-client:polling-xhr');
@@ -6073,7 +6357,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6084,7 +6368,7 @@ var Transport = __webpack_require__(6);
 var parser = __webpack_require__(2);
 var parseqs = __webpack_require__(8);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(22);
+var yeast = __webpack_require__(23);
 var debug = __webpack_require__(1)('engine.io-client:websocket');
 var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
@@ -6365,7 +6649,7 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 
@@ -6390,7 +6674,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 
@@ -6413,7 +6697,7 @@ try {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
@@ -7320,10 +7604,10 @@ try {
   }
 }).call(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module), __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /**
@@ -7478,7 +7762,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -7516,7 +7800,7 @@ module.exports = function parsejson(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -7702,7 +7986,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -7710,9 +7994,9 @@ process.umask = function() { return 0; };
  * Module dependencies.
  */
 
-var url = __webpack_require__(44);
+var url = __webpack_require__(45);
 var parser = __webpack_require__(9);
-var Manager = __webpack_require__(17);
+var Manager = __webpack_require__(18);
 var debug = __webpack_require__(1)('socket.io-client');
 
 /**
@@ -7812,12 +8096,12 @@ exports.connect = lookup;
  * @api public
  */
 
-exports.Manager = __webpack_require__(17);
-exports.Socket = __webpack_require__(19);
+exports.Manager = __webpack_require__(18);
+exports.Socket = __webpack_require__(20);
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -7825,7 +8109,7 @@ exports.Socket = __webpack_require__(19);
  * Module dependencies.
  */
 
-var parseuri = __webpack_require__(16);
+var parseuri = __webpack_require__(17);
 var debug = __webpack_require__(1)('socket.io-client:url');
 
 /**
@@ -7899,7 +8183,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -7908,8 +8192,8 @@ function url (uri, loc) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(15);
-var isBuf = __webpack_require__(20);
+var isArray = __webpack_require__(16);
+var isBuf = __webpack_require__(21);
 
 /**
  * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -8047,7 +8331,7 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 
@@ -8217,7 +8501,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -8227,7 +8511,7 @@ Emitter.prototype.hasListeners = function(event){
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(48);
+exports = module.exports = __webpack_require__(49);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -8391,7 +8675,7 @@ function localstorage(){
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -8407,7 +8691,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(49);
+exports.humanize = __webpack_require__(50);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -8594,7 +8878,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /**
@@ -8725,7 +9009,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -8744,128 +9028,6 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Input = (function (_super) {
-        __extends(Input, _super);
-        function Input(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.label = _this.add('span', { "innerHTML": "", "className": "" });
-            _this.input = _this.add('input', { "innerHTML": "", "className": " input_input_style" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({ twoway: true, labelWidth: '100px' }, options);
-            _this.el.className += ' ';
-            _this.el.className += ' Input_style';
-            _this.el.addEventListener('change', _this.onChange.bind(_this));
-            return _this;
-        }
-        Input.prototype.onChange = function () {
-            var val = this.input.value;
-            if (this.options.twoway && this.options.key) {
-                this.data.set(this.options.key, val);
-            }
-            this.emit('change', val);
-        };
-        Input.prototype.value = function () {
-            return this.input.value;
-        };
-        Input.prototype.init = function () {
-            this.label.style.width = this.options.labelWidth;
-        };
-        Input.prototype.render = function () {
-            if (this.options.label) {
-                this.label.innerHTML = this.options.label;
-            }
-            this.label.style.display = this.options.label ? 'flex' : 'none';
-            if (this.data) {
-                this.input.value = this.options.key ? this.data.get(this.options.key) || '' : this.data || '';
-            }
-        };
-        return Input;
-    }(SyncView_1.SyncView));
-    exports.Input = Input;
-    SyncView_1.SyncView.addGlobalStyle('.input_input_style', "\n            flex: 1;\n            font-size: 1em;\n            padding: 0.5em 0;\n            background-color: transparent;\n            border: none;\n            border-bottom: 1px solid rgba(0,0,0,0.5);\n    ");
-    var Modal = (function (_super) {
-        __extends(Modal, _super);
-        function Modal(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.viewContainer = _this.add('div', { "innerHTML": "", "className": "" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({ hideOnClick: true }, options);
-            _this.el.className += ' ';
-            _this.el.className += ' Modal_style';
-            _this.el.addEventListener('click', _this.onClick.bind(_this));
-            _this.viewContainer.addEventListener('click', function (e) { e.stopPropagation(); });
-            return _this;
-        }
-        Modal.prototype.onClick = function () { if (this.options.hideOnClick) {
-            this.hide();
-        } };
-        Modal.prototype.init = function () {
-            this.hide();
-            if (this.options.view) {
-                this.view = new this.options.view();
-                var _me = this;
-                var handler = function (eventName) {
-                    if (eventName === 'hide') {
-                        _me.hide();
-                    }
-                    _me.emit.apply(_me, arguments);
-                };
-                this.view.onAny(handler.bind(this));
-                this.viewContainer.appendChild(this.view.el);
-            }
-        };
-        Modal.prototype.render = function () {
-            if (this.view)
-                this.view.update(this.data);
-        };
-        return Modal;
-    }(SyncView_1.SyncView));
-    exports.Modal = Modal;
-    var SimpleHeader = (function (_super) {
-        __extends(SimpleHeader, _super);
-        function SimpleHeader(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill span_title_style row-fill" });
-            _this.add = _this.add('button', { "innerHTML": "Add", "className": "row-nofill row-nofill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.add.addEventListener('click', function () { _this.emit('add'); });
-            return _this;
-        }
-        SimpleHeader.prototype.showButtons = function (val) {
-            this.add.style.display = val ? 'flex' : 'none';
-        };
-        SimpleHeader.prototype.init = function () {
-            this.title.innerHTML = this.options.title;
-        };
-        return SimpleHeader;
-    }(SyncView_1.SyncView));
-    exports.SimpleHeader = SimpleHeader;
-    SyncView_1.SyncView.addGlobalStyle('.span_title_style', " \n            font-weight: bold; \n            font-size: 1.5em;\n        ");
-    SyncView_1.SyncView.addGlobalStyle('.Input_style', " \n        width: 100%;\n        display: flex; \n    ");
-    SyncView_1.SyncView.addGlobalStyle('.Modal_style', " \n        position: fixed;\n        left: 0; right: 0; top: 0; bottom: 0;\n        background-color: rgba(0,0,0,0.7);\n        overflow-y: scroll;\n        display: flex;\n        align-items: center;\n        justify-content: center;\t\n    ");
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8879,7 +9041,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(43)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(44)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SyncNodeEventEmitter = (function () {
@@ -9537,7 +9699,7 @@ module.exports = __webpack_amd_options__;
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)(module), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module), __webpack_require__(0)))
 
 /***/ }),
 /* 55 */
@@ -9559,7 +9721,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(51), __webpack_require__(58), __webpack_require__(23)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, smoothscroll) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(25), __webpack_require__(24)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, smoothscroll) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     smoothscroll.polyfill();
@@ -9623,7 +9785,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             var _this = _super.call(this, options) || this;
             _this.isClosed = false;
             _this.hideDrawer = _this.add('button', { "innerHTML": "<", "className": " button_hideDrawer_style" });
-            _this.title = _this.add('h1', { "innerHTML": "Pages", "className": "" });
+            _this.title = _this.add('h1', { "innerHTML": "Pages32", "className": "" });
             _this.addBtn = _this.add('button', { "innerHTML": "Add Page", "className": " button_addBtn_style" });
             _this.itemList = _this.addView(new SyncView_1.SyncList({ item: PageItem }), ' SyncList_itemList_style');
             _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
@@ -9783,170 +9945,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
     SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
     SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
     SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 57 */,
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(51)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SpecialsListView = (function (_super) {
-        __extends(SpecialsListView, _super);
-        function SpecialsListView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.header = _this.addView(new Components_1.SimpleHeader({ title: 'Specials' }), ' SimpleHeader_header_style');
-            _this.addModal = _this.addView(new Components_1.Modal({ view: AddSpecialModal }), '');
-            _this.list = _this.addView(new SyncView_1.SyncList({ item: SpecialItemView }), '');
-            _this.editModal = _this.addView(new Components_1.Modal({ view: EditSpecialModal }), '');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' SpecialsListView_style';
-            _this.header.on('add', function () {
-                _this.addModal.show();
-            });
-            _this.addBinding('addModal', 'update', 'data');
-            _this.list.on('edit', function (view, data) {
-                _this.editModal.update(data);
-                _this.editModal.show();
-            });
-            _this.addBinding('list', 'update', 'data');
-            return _this;
-        }
-        SpecialsListView.prototype.updateAdminMode = function (val) {
-            this.header.showButtons(val);
-        };
-        SpecialsListView.prototype.init = function () {
-            this.header.title.innerHTML = this.options.title || 'Specials';
-            this.updateAdminMode(false);
-        };
-        return SpecialsListView;
-    }(SyncView_1.SyncView));
-    exports.SpecialsListView = SpecialsListView;
-    SyncView_1.SyncView.addGlobalStyle('.SimpleHeader_header_style', " padding-bottom: 1em; color: #AAA; ");
-    var SpecialItemView = (function (_super) {
-        __extends(SpecialItemView, _super);
-        function SpecialItemView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.row1 = _this.addView(new SpecialItemViewRow1(), 'col-nofill SpecialItemViewRow1_row1_style');
-            _this.description = _this.add('span', { "innerHTML": "", "className": "col-fill span_description_style col-fill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' col hover-blue';
-            _this.el.className += ' SpecialItemView_style';
-            _this.el.addEventListener('click', _this.onClick.bind(_this));
-            _this.addBinding('row1', 'update', 'data');
-            _this.addBinding('description', 'innerHTML', 'data.description');
-            return _this;
-        }
-        SpecialItemView.prototype.onClick = function () { this.emit('edit', this.data); };
-        return SpecialItemView;
-    }(SyncView_1.SyncView));
-    exports.SpecialItemView = SpecialItemView;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_row1_style', " font-weight: bold; ");
-    SyncView_1.SyncView.addGlobalStyle('.span_description_style', " font-style: italic; padding-left: 1em; ");
-    var SpecialItemViewRow1 = (function (_super) {
-        __extends(SpecialItemViewRow1, _super);
-        function SpecialItemViewRow1(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill row-fill" });
-            _this.price = _this.add('span', { "innerHTML": "", "className": "row-nofill row-nofill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.el.className += ' SpecialItemViewRow1_style';
-            _this.addBinding('title', 'innerHTML', 'data.title');
-            _this.addBinding('price', 'innerHTML', 'data.price');
-            return _this;
-        }
-        return SpecialItemViewRow1;
-    }(SyncView_1.SyncView));
-    exports.SpecialItemViewRow1 = SpecialItemViewRow1;
-    var EditSpecialModal = (function (_super) {
-        __extends(EditSpecialModal, _super);
-        function EditSpecialModal(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title' }), '');
-            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description' }), '');
-            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price' }), '');
-            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link' }), '');
-            _this.btnDelete = _this.add('button', { "innerHTML": "Delete", "className": "" });
-            _this.btnClose = _this.add('button', { "innerHTML": "Close", "className": "" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' EditSpecialModal_style';
-            _this.addBinding('title', 'update', 'data');
-            _this.addBinding('description', 'update', 'data');
-            _this.addBinding('price', 'update', 'data');
-            _this.addBinding('link', 'update', 'data');
-            _this.btnDelete.addEventListener('click', function () {
-                if (confirm('Delete item?')) {
-                    _this.data.parent.remove(_this.data.key);
-                    _this.emit('hide');
-                }
-            });
-            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
-            return _this;
-        }
-        return EditSpecialModal;
-    }(SyncView_1.SyncView));
-    exports.EditSpecialModal = EditSpecialModal;
-    var AddSpecialModal = (function (_super) {
-        __extends(AddSpecialModal, _super);
-        function AddSpecialModal(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title', twoway: false }), '');
-            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description', twoway: false }), '');
-            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price', twoway: false }), '');
-            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link', twoway: false }), '');
-            _this.btnAdd = _this.add('button', { "innerHTML": "Add", "className": "" });
-            _this.btnClose = _this.add('button', { "innerHTML": "Cancel", "className": "" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' AddSpecialModal_style';
-            _this.addBinding('title', 'update', 'data');
-            _this.addBinding('description', 'update', 'data');
-            _this.addBinding('price', 'update', 'data');
-            _this.addBinding('link', 'update', 'data');
-            _this.btnAdd.addEventListener('click', function () {
-                var item = {
-                    title: _this.title.value(),
-                    description: _this.description.value(),
-                    price: _this.price.value(),
-                    link: _this.link.value()
-                };
-                _this.data.setItem(item);
-                _this.emit('hide');
-            });
-            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
-            return _this;
-        }
-        AddSpecialModal.prototype.init = function () { this.update({}); };
-        return AddSpecialModal;
-    }(SyncView_1.SyncView));
-    exports.AddSpecialModal = AddSpecialModal;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_style', " padding: 0 1em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemView_style', " padding: 0.25em 0; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_style', " border-bottom: 1px dashed #999; ");
-    SyncView_1.SyncView.addGlobalStyle('.EditSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
-    SyncView_1.SyncView.addGlobalStyle('.AddSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

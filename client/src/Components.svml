@@ -77,9 +77,9 @@ SimpleHeader[row]
             font-weight: bold; 
             font-size: 1.5em;
         }
-    #add:button[row-nofill] 'Add' onClick() { this.emit('add') }
+    #addBtn:button[row-nofill] 'Add' onClick() { this.emit('add') }
     showButtons(val: boolean) {
-        this.add.style.display = val ? 'flex' : 'none';
+        this.addBtn.style.display = val ? 'flex' : 'none';
     }
     init() {
         this.title.innerHTML = this.options.title;

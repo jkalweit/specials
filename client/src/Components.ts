@@ -77,15 +77,15 @@ export class Modal extends SyncView<SyncData> {
 
 export class SimpleHeader extends SyncView<SyncData> {
 	title = this.add('span', {"innerHTML":"","className":"row-fill span_title_style row-fill"});
-	add = this.add('button', {"innerHTML":"Add","className":"row-nofill row-nofill"});
+	addBtn = this.add('button', {"innerHTML":"Add","className":"row-nofill row-nofill"});
 	constructor(options: any = {}) {
 		super(options);
 		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
-		this.add.addEventListener('click', () => {  this.emit('add')  });
+		this.addBtn.addEventListener('click', () => {  this.emit('add')  });
 	}
 	showButtons(val: boolean) {
-        this.add.style.display = val ? 'flex' : 'none';
+        this.addBtn.style.display = val ? 'flex' : 'none';
     }
 	init() {
         this.title.innerHTML = this.options.title;
