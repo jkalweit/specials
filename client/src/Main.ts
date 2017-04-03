@@ -5,6 +5,7 @@ import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from "./SyncNode
     import { MainData, PageData } from './Types'
     import { Input } from './Components'
     import { SpecialsListView } from './Specials'
+    import { CastReceiver } from './CastReceiver'
 
     import * as smoothscroll from './lib/smoothscroll'
     smoothscroll.polyfill();
@@ -194,6 +195,9 @@ SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px;
     app.start();
 
     new SyncReloader().start();
+
+    let receiver = new CastReceiver();
+    receiver.start();
 
 SyncView.addGlobalStyle('.MainView_style', ` 
         position: absolute;

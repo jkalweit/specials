@@ -9721,7 +9721,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(25), __webpack_require__(24)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, smoothscroll) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(25), __webpack_require__(57), __webpack_require__(24)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, CastReceiver_1, smoothscroll) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     smoothscroll.polyfill();
@@ -9941,10 +9941,76 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
     var app = new SyncView_1.SyncApp(new MainView());
     app.start();
     new SyncView_1.SyncReloader().start();
+    var receiver = new CastReceiver_1.CastReceiver();
+    receiver.start();
     SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n        left: 0; top: 0; right: 0; bottom: 0;\n        color: #FFF;\n        background-color: #000;\n    ");
     SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
     SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
     SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"SyncNode/syncnode\""); e.code = 'MODULE_NOT_FOUND';; throw e; }())], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, syncnode_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var CastReceiver = (function (_super) {
+        __extends(CastReceiver, _super);
+        function CastReceiver() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        CastReceiver.prototype.start = function () {
+            window.onload = function () {
+                cast.receiver.logger.setLevelValue(0);
+                window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
+                console.log('Starting Receiver Manager');
+                castReceiverManager.onReady = function (event) {
+                    console.log('Received Ready event: ' + JSON.stringify(event.data));
+                    window.castReceiverManager.setApplicationState('Application status is ready...');
+                };
+                castReceiverManager.onSenderConnected = function (event) {
+                    console.log('Received Sender Connected event: ' + event.data);
+                    console.log(window.castReceiverManager.getSender(event.data).userAgent);
+                };
+                castReceiverManager.onSenderDisconnected = function (event) {
+                    console.log('Received Sender Disconnected event: ' + event.data);
+                    if (window.castReceiverManager.getSenders().length == 0) {
+                        window.close();
+                    }
+                };
+                // create a CastMessageBus to handle messages for a custom namespace
+                window.messageBus =
+                    window.castReceiverManager.getCastMessageBus('urn:x-cast:com.google.cast.sample.helloworld');
+                // handler for the CastMessageBus message event
+                window.messageBus.onMessage = function (event) {
+                    console.log('Message [' + event.senderId + ']: ' + event.data);
+                    this.emit('message', event);
+                    // inform all senders on the CastMessageBus of the incoming message event
+                    // sender message listener will be invoked
+                    window.messageBus.send(event.senderId, event.data);
+                };
+                // initialize the CastReceiverManager with an application status message
+                window.castReceiverManager.start({ statusText: 'Application is starting' });
+                console.log('Receiver Manager started');
+            };
+        };
+        return CastReceiver;
+    }(syncnode_1.SyncNodeEventEmitter));
+    exports.CastReceiver = CastReceiver;
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
