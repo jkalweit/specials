@@ -4,6 +4,7 @@
     import { SpecialsListView } from './Specials'
     import { CastReceiver } from './CastReceiver'
 
+
     import * as smoothscroll from './lib/smoothscroll'
     smoothscroll.polyfill();
 }
@@ -45,6 +46,10 @@ MainView<MainData>[row]
         }
     */
     #editor:PageEditor[row-fill]
+    init() {
+        let receiver = new CastReceiver();
+        receiver.start();
+    }
     render() { 
         if(!this.data.pages) this.data.set('pages', {});
         if(this.selectedPage) this.selectedPage = this.data.pages[this.selectedPage.key];
@@ -160,9 +165,5 @@ DraftWineColumn[col]
     eventHub.init();
     let app = new SyncApp<SyncData>(new MainView());
     app.start();
-
     new SyncReloader().start();
-
-    let receiver = new CastReceiver();
-    receiver.start();
 }

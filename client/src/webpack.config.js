@@ -1,7 +1,11 @@
 module.exports = {
-    entry: './Main.ts',
+    entry: {
+        'receiverBundle': './ReceiverMain.ts',
+        'senderBundle': './SenderMain.ts',
+    },
     output: {
-        filename: '../dist/bundle.js'
+        path: '../dist',
+        filename: '[name].js'
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -14,5 +18,6 @@ module.exports = {
             { test: /\.css$/, use: [ 'style-loader', 'css-loader' ]
       }
         ]
-    }
+    },
+    devtool: 'source-map'
 }

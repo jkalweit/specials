@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -104,7 +104,7 @@ module.exports = g;
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(33);
+exports = module.exports = __webpack_require__(30);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -275,7 +275,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)))
 
 /***/ }),
 /* 2 */
@@ -285,15 +285,15 @@ function localstorage(){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(40);
+var keys = __webpack_require__(37);
 var hasBinary = __webpack_require__(14);
-var sliceBuffer = __webpack_require__(29);
-var after = __webpack_require__(28);
-var utf8 = __webpack_require__(55);
+var sliceBuffer = __webpack_require__(26);
+var after = __webpack_require__(25);
+var utf8 = __webpack_require__(52);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(31);
+  base64encoder = __webpack_require__(28);
 }
 
 /**
@@ -351,7 +351,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(32);
+var Blob = __webpack_require__(29);
 
 /**
  * Encodes a packet.
@@ -1644,7 +1644,7 @@ Transport.prototype.onClose = function () {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(41);
+var hasCORS = __webpack_require__(38);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -1734,10 +1734,10 @@ exports.decode = function(qs){
  * Module dependencies.
  */
 
-var debug = __webpack_require__(50)('socket.io-parser');
-var json = __webpack_require__(42);
-var Emitter = __webpack_require__(49);
-var binary = __webpack_require__(48);
+var debug = __webpack_require__(47)('socket.io-parser');
+var json = __webpack_require__(39);
+var Emitter = __webpack_require__(46);
+var binary = __webpack_require__(45);
 var isBuf = __webpack_require__(21);
 
 /**
@@ -2295,9 +2295,9 @@ module.exports = function(obj, fn){
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var XHR = __webpack_require__(38);
-var JSONP = __webpack_require__(37);
-var websocket = __webpack_require__(39);
+var XHR = __webpack_require__(35);
+var JSONP = __webpack_require__(34);
+var websocket = __webpack_require__(36);
 
 /**
  * Export transports.
@@ -2741,7 +2741,7 @@ module.exports = function parseuri(str) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(34);
+var eio = __webpack_require__(31);
 var Socket = __webpack_require__(20);
 var Emitter = __webpack_require__(3);
 var parser = __webpack_require__(9);
@@ -2749,7 +2749,7 @@ var on = __webpack_require__(19);
 var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:manager');
 var indexOf = __webpack_require__(15);
-var Backoff = __webpack_require__(30);
+var Backoff = __webpack_require__(27);
 
 /**
  * IE6+ hasOwnProperty
@@ -3339,7 +3339,7 @@ function on (obj, ev, fn) {
 
 var parser = __webpack_require__(9);
 var Emitter = __webpack_require__(3);
-var toArray = __webpack_require__(53);
+var toArray = __webpack_require__(50);
 var on = __webpack_require__(19);
 var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:socket');
@@ -3787,7 +3787,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(46)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(43)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SyncNodeEventEmitter = (function () {
@@ -4303,570 +4303,6 @@ module.exports = yeast;
 
 /***/ }),
 /* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
- * smoothscroll polyfill - v0.3.4
- * https://iamdustan.github.io/smoothscroll
- * 2016 (c) Dustan Kasten, Jeremias Menichelli - MIT License
- */
-
-(function(w, d, undefined) {
-  'use strict';
-
-  /*
-   * aliases
-   * w: window global object
-   * d: document
-   * undefined: undefined
-   */
-
-  // polyfill
-  function polyfill() {
-    // return when scrollBehavior interface is supported
-    if ('scrollBehavior' in d.documentElement.style) {
-      return;
-    }
-
-    /*
-     * globals
-     */
-    var Element = w.HTMLElement || w.Element;
-    var SCROLL_TIME = 468;
-
-    /*
-     * object gathering original scroll methods
-     */
-    var original = {
-      scroll: w.scroll || w.scrollTo,
-      scrollBy: w.scrollBy,
-      elScroll: Element.prototype.scroll || scrollElement,
-      scrollIntoView: Element.prototype.scrollIntoView
-    };
-
-    /*
-     * define timing method
-     */
-    var now = w.performance && w.performance.now
-      ? w.performance.now.bind(w.performance) : Date.now;
-
-    /**
-     * changes scroll position inside an element
-     * @method scrollElement
-     * @param {Number} x
-     * @param {Number} y
-     */
-    function scrollElement(x, y) {
-      this.scrollLeft = x;
-      this.scrollTop = y;
-    }
-
-    /**
-     * returns result of applying ease math function to a number
-     * @method ease
-     * @param {Number} k
-     * @returns {Number}
-     */
-    function ease(k) {
-      return 0.5 * (1 - Math.cos(Math.PI * k));
-    }
-
-    /**
-     * indicates if a smooth behavior should be applied
-     * @method shouldBailOut
-     * @param {Number|Object} x
-     * @returns {Boolean}
-     */
-    function shouldBailOut(x) {
-      if (typeof x !== 'object'
-            || x === null
-            || x.behavior === undefined
-            || x.behavior === 'auto'
-            || x.behavior === 'instant') {
-        // first arg not an object/null
-        // or behavior is auto, instant or undefined
-        return true;
-      }
-
-      if (typeof x === 'object'
-            && x.behavior === 'smooth') {
-        // first argument is an object and behavior is smooth
-        return false;
-      }
-
-      // throw error when behavior is not supported
-      throw new TypeError('behavior not valid');
-    }
-
-    /**
-     * finds scrollable parent of an element
-     * @method findScrollableParent
-     * @param {Node} el
-     * @returns {Node} el
-     */
-    function findScrollableParent(el) {
-      var isBody;
-      var hasScrollableSpace;
-      var hasVisibleOverflow;
-
-      do {
-        el = el.parentNode;
-
-        // set condition variables
-        isBody = el === d.body;
-        hasScrollableSpace =
-          el.clientHeight < el.scrollHeight ||
-          el.clientWidth < el.scrollWidth;
-        hasVisibleOverflow =
-          w.getComputedStyle(el, null).overflow === 'visible';
-      } while (!isBody && !(hasScrollableSpace && !hasVisibleOverflow));
-
-      isBody = hasScrollableSpace = hasVisibleOverflow = null;
-
-      return el;
-    }
-
-    /**
-     * self invoked function that, given a context, steps through scrolling
-     * @method step
-     * @param {Object} context
-     */
-    function step(context) {
-      // call method again on next available frame
-      context.frame = w.requestAnimationFrame(step.bind(w, context));
-
-      var time = now();
-      var value;
-      var currentX;
-      var currentY;
-      var elapsed = (time - context.startTime) / SCROLL_TIME;
-
-      // avoid elapsed times higher than one
-      elapsed = elapsed > 1 ? 1 : elapsed;
-
-      // apply easing to elapsed time
-      value = ease(elapsed);
-
-      currentX = context.startX + (context.x - context.startX) * value;
-      currentY = context.startY + (context.y - context.startY) * value;
-
-      context.method.call(context.scrollable, currentX, currentY);
-
-      // return when end points have been reached
-      if (currentX === context.x && currentY === context.y) {
-        w.cancelAnimationFrame(context.frame);
-        return;
-      }
-    }
-
-    /**
-     * scrolls window with a smooth behavior
-     * @method smoothScroll
-     * @param {Object|Node} el
-     * @param {Number} x
-     * @param {Number} y
-     */
-    function smoothScroll(el, x, y) {
-      var scrollable;
-      var startX;
-      var startY;
-      var method;
-      var startTime = now();
-      var frame;
-
-      // define scroll context
-      if (el === d.body) {
-        scrollable = w;
-        startX = w.scrollX || w.pageXOffset;
-        startY = w.scrollY || w.pageYOffset;
-        method = original.scroll;
-      } else {
-        scrollable = el;
-        startX = el.scrollLeft;
-        startY = el.scrollTop;
-        method = scrollElement;
-      }
-
-      // cancel frame when a scroll event's happening
-      if (frame) {
-        w.cancelAnimationFrame(frame);
-      }
-
-      // scroll looping over a frame
-      step({
-        scrollable: scrollable,
-        method: method,
-        startTime: startTime,
-        startX: startX,
-        startY: startY,
-        x: x,
-        y: y,
-        frame: frame
-      });
-    }
-
-    /*
-     * ORIGINAL METHODS OVERRIDES
-     */
-
-    // w.scroll and w.scrollTo
-    w.scroll = w.scrollTo = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.scroll.call(
-          w,
-          arguments[0].left || arguments[0],
-          arguments[0].top || arguments[1]
-        );
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        ~~arguments[0].left,
-        ~~arguments[0].top
-      );
-    };
-
-    // w.scrollBy
-    w.scrollBy = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.scrollBy.call(
-          w,
-          arguments[0].left || arguments[0],
-          arguments[0].top || arguments[1]
-        );
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        ~~arguments[0].left + (w.scrollX || w.pageXOffset),
-        ~~arguments[0].top + (w.scrollY || w.pageYOffset)
-      );
-    };
-
-    // Element.prototype.scroll and Element.prototype.scrollTo
-    Element.prototype.scroll = Element.prototype.scrollTo = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.elScroll.call(
-            this,
-            arguments[0].left || arguments[0],
-            arguments[0].top || arguments[1]
-        );
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-          this,
-          this,
-          arguments[0].left,
-          arguments[0].top
-      );
-    };
-
-    // Element.prototype.scrollBy
-    Element.prototype.scrollBy = function() {
-      var arg0 = arguments[0];
-
-      if (typeof arg0 === 'object') {
-        this.scroll({
-          left: arg0.left + this.scrollLeft,
-          top: arg0.top + this.scrollTop,
-          behavior: arg0.behavior
-        });
-      } else {
-        this.scroll(
-          this.scrollLeft + arg0,
-          this.scrollTop + arguments[1]
-        );
-      }
-    };
-
-    // Element.prototype.scrollIntoView
-    Element.prototype.scrollIntoView = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.scrollIntoView.call(this, arguments[0] || true);
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      var scrollableParent = findScrollableParent(this);
-      var parentRects = scrollableParent.getBoundingClientRect();
-      var clientRects = this.getBoundingClientRect();
-
-      if (scrollableParent !== d.body) {
-        // reveal element inside parent
-        smoothScroll.call(
-          this,
-          scrollableParent,
-          scrollableParent.scrollLeft + clientRects.left - parentRects.left,
-          scrollableParent.scrollTop + clientRects.top - parentRects.top
-        );
-        // reveal parent in viewport
-        w.scrollBy({
-          left: parentRects.left,
-          top: parentRects.top,
-          behavior: 'smooth'
-        });
-      } else {
-        // reveal element in viewport
-        w.scrollBy({
-          left: clientRects.left,
-          top: clientRects.top,
-          behavior: 'smooth'
-        });
-      }
-    };
-  }
-
-  if (true) {
-    // commonjs
-    module.exports = { polyfill: polyfill };
-  } else {
-    // global
-    polyfill();
-  }
-})(window, document);
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var CastReceiver = (function (_super) {
-        __extends(CastReceiver, _super);
-        function CastReceiver() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        CastReceiver.prototype.start = function () {
-            window.onload = function () {
-                cast.receiver.logger.setLevelValue(0);
-                window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-                console.log('Starting Receiver Manager');
-                castReceiverManager.onReady = function (event) {
-                    console.log('Received Ready event: ' + JSON.stringify(event.data));
-                    window.castReceiverManager.setApplicationState('Application status is ready...');
-                };
-                castReceiverManager.onSenderConnected = function (event) {
-                    console.log('Received Sender Connected event: ' + event.data);
-                    console.log(window.castReceiverManager.getSender(event.data).userAgent);
-                };
-                castReceiverManager.onSenderDisconnected = function (event) {
-                    console.log('Received Sender Disconnected event: ' + event.data);
-                    if (window.castReceiverManager.getSenders().length == 0) {
-                        window.close();
-                    }
-                };
-                // create a CastMessageBus to handle messages for a custom namespace
-                window.messageBus =
-                    window.castReceiverManager.getCastMessageBus('urn:x-cast:jkalweit.signs');
-                // handler for the CastMessageBus message event
-                window.messageBus.onMessage = function (event) {
-                    console.log('Message [' + event.senderId + ']: ' + event.data);
-                    this.emit('message', event);
-                    // inform all senders on the CastMessageBus of the incoming message event
-                    // sender message listener will be invoked
-                    window.messageBus.send(event.senderId, event.data);
-                };
-                // initialize the CastReceiverManager with an application status message
-                window.castReceiverManager.start({ statusText: 'Application is starting' });
-                console.log('Receiver Manager started');
-            };
-        };
-        return CastReceiver;
-    }(SyncNode_1.SyncNodeEventEmitter));
-    exports.CastReceiver = CastReceiver;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SpecialsListView = (function (_super) {
-        __extends(SpecialsListView, _super);
-        function SpecialsListView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.header = _this.addView(new Components_1.SimpleHeader({ title: 'Specials' }), ' SimpleHeader_header_style');
-            _this.addModal = _this.addView(new Components_1.Modal({ view: AddSpecialModal }), '');
-            _this.list = _this.addView(new SyncView_1.SyncList({ item: SpecialItemView }), '');
-            _this.editModal = _this.addView(new Components_1.Modal({ view: EditSpecialModal }), '');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' SpecialsListView_style';
-            _this.header.on('add', function () {
-                _this.addModal.show();
-            });
-            _this.addBinding('addModal', 'update', 'data');
-            _this.list.on('edit', function (view, data) {
-                _this.editModal.update(data);
-                _this.editModal.show();
-            });
-            _this.addBinding('list', 'update', 'data');
-            return _this;
-        }
-        SpecialsListView.prototype.updateAdminMode = function (val) {
-            this.header.showButtons(val);
-        };
-        SpecialsListView.prototype.init = function () {
-            this.header.title.innerHTML = this.options.title || 'Specials';
-            this.updateAdminMode(false);
-        };
-        return SpecialsListView;
-    }(SyncView_1.SyncView));
-    exports.SpecialsListView = SpecialsListView;
-    SyncView_1.SyncView.addGlobalStyle('.SimpleHeader_header_style', " padding-bottom: 1em; color: #AAA; ");
-    var SpecialItemView = (function (_super) {
-        __extends(SpecialItemView, _super);
-        function SpecialItemView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.row1 = _this.addView(new SpecialItemViewRow1(), 'col-nofill SpecialItemViewRow1_row1_style');
-            _this.description = _this.add('span', { "innerHTML": "", "className": "col-fill span_description_style col-fill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' col hover-blue';
-            _this.el.className += ' SpecialItemView_style';
-            _this.el.addEventListener('click', _this.onClick.bind(_this));
-            _this.addBinding('row1', 'update', 'data');
-            _this.addBinding('description', 'innerHTML', 'data.description');
-            return _this;
-        }
-        SpecialItemView.prototype.onClick = function () { this.emit('edit', this.data); };
-        return SpecialItemView;
-    }(SyncView_1.SyncView));
-    exports.SpecialItemView = SpecialItemView;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_row1_style', " font-weight: bold; ");
-    SyncView_1.SyncView.addGlobalStyle('.span_description_style', " font-style: italic; padding-left: 1em; ");
-    var SpecialItemViewRow1 = (function (_super) {
-        __extends(SpecialItemViewRow1, _super);
-        function SpecialItemViewRow1(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.add('span', { "innerHTML": "", "className": "row-fill row-fill" });
-            _this.price = _this.add('span', { "innerHTML": "", "className": "row-nofill row-nofill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.el.className += ' SpecialItemViewRow1_style';
-            _this.addBinding('title', 'innerHTML', 'data.title');
-            _this.addBinding('price', 'innerHTML', 'data.price');
-            return _this;
-        }
-        return SpecialItemViewRow1;
-    }(SyncView_1.SyncView));
-    exports.SpecialItemViewRow1 = SpecialItemViewRow1;
-    var EditSpecialModal = (function (_super) {
-        __extends(EditSpecialModal, _super);
-        function EditSpecialModal(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title' }), '');
-            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description' }), '');
-            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price' }), '');
-            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link' }), '');
-            _this.btnDelete = _this.add('button', { "innerHTML": "Delete", "className": "" });
-            _this.btnClose = _this.add('button', { "innerHTML": "Close", "className": "" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' EditSpecialModal_style';
-            _this.addBinding('title', 'update', 'data');
-            _this.addBinding('description', 'update', 'data');
-            _this.addBinding('price', 'update', 'data');
-            _this.addBinding('link', 'update', 'data');
-            _this.btnDelete.addEventListener('click', function () {
-                if (confirm('Delete item?')) {
-                    _this.data.parent.remove(_this.data.key);
-                    _this.emit('hide');
-                }
-            });
-            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
-            return _this;
-        }
-        return EditSpecialModal;
-    }(SyncView_1.SyncView));
-    exports.EditSpecialModal = EditSpecialModal;
-    var AddSpecialModal = (function (_super) {
-        __extends(AddSpecialModal, _super);
-        function AddSpecialModal(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Components_1.Input({ label: 'Name', key: 'title', twoway: false }), '');
-            _this.description = _this.addView(new Components_1.Input({ label: 'Description', key: 'description', twoway: false }), '');
-            _this.price = _this.addView(new Components_1.Input({ label: 'Price', key: 'price', twoway: false }), '');
-            _this.link = _this.addView(new Components_1.Input({ label: 'Link', key: 'link', twoway: false }), '');
-            _this.btnAdd = _this.add('button', { "innerHTML": "Add", "className": "" });
-            _this.btnClose = _this.add('button', { "innerHTML": "Cancel", "className": "" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            _this.el.className += ' AddSpecialModal_style';
-            _this.addBinding('title', 'update', 'data');
-            _this.addBinding('description', 'update', 'data');
-            _this.addBinding('price', 'update', 'data');
-            _this.addBinding('link', 'update', 'data');
-            _this.btnAdd.addEventListener('click', function () {
-                var item = {
-                    title: _this.title.value(),
-                    description: _this.description.value(),
-                    price: _this.price.value(),
-                    link: _this.link.value()
-                };
-                _this.data.setItem(item);
-                _this.emit('hide');
-            });
-            _this.btnClose.addEventListener('click', function () { _this.emit('hide'); });
-            return _this;
-        }
-        AddSpecialModal.prototype.init = function () { this.update({}); };
-        return AddSpecialModal;
-    }(SyncView_1.SyncView));
-    exports.AddSpecialModal = AddSpecialModal;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_style', " padding: 0 1em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemView_style', " padding: 0.25em 0; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialItemViewRow1_style', " border-bottom: 1px dashed #999; ");
-    SyncView_1.SyncView.addGlobalStyle('.EditSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
-    SyncView_1.SyncView.addGlobalStyle('.AddSpecialModal_style', "\n        background-color: #FFF;\n        width: 500px;\n        padding: 1em;\n    ");
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -4900,7 +4336,7 @@ function noop() {}
 
 
 /***/ }),
-/* 29 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /**
@@ -4935,7 +4371,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 30 */
+/* 27 */
 /***/ (function(module, exports) {
 
 
@@ -5026,7 +4462,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 31 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /*
@@ -5099,7 +4535,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 32 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5202,7 +4638,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -5218,7 +4654,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(43);
+exports.humanize = __webpack_require__(40);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -5408,19 +4844,19 @@ function coerce(val) {
 
 
 /***/ }),
-/* 34 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(35);
+module.exports = __webpack_require__(32);
 
 
 /***/ }),
-/* 35 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(36);
+module.exports = __webpack_require__(33);
 
 /**
  * Exports parser
@@ -5432,7 +4868,7 @@ module.exports.parser = __webpack_require__(2);
 
 
 /***/ }),
-/* 36 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5445,7 +4881,7 @@ var debug = __webpack_require__(1)('engine.io-client:socket');
 var index = __webpack_require__(15);
 var parser = __webpack_require__(2);
 var parseuri = __webpack_require__(17);
-var parsejson = __webpack_require__(44);
+var parsejson = __webpack_require__(41);
 var parseqs = __webpack_require__(8);
 
 /**
@@ -6177,7 +5613,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -6415,7 +5851,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 38 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6846,7 +6282,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6863,7 +6299,7 @@ var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(56);
+    NodeWebSocket = __webpack_require__(53);
   } catch (e) { }
 }
 
@@ -7138,7 +6574,7 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
+/* 37 */
 /***/ (function(module, exports) {
 
 
@@ -7163,7 +6599,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 41 */
+/* 38 */
 /***/ (function(module, exports) {
 
 
@@ -7186,14 +6622,14 @@ try {
 
 
 /***/ }),
-/* 42 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
   // Detect the `define` function exposed by asynchronous module loaders. The
   // strict `define` check is necessary for compatibility with `r.js`.
-  var isLoader = "function" === "function" && __webpack_require__(54);
+  var isLoader = "function" === "function" && __webpack_require__(51);
 
   // A set of types used to distinguish objects from primitives.
   var objectTypes = {
@@ -8096,7 +7532,7 @@ try {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module), __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /**
@@ -8251,7 +7687,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 44 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -8289,7 +7725,7 @@ module.exports = function parsejson(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -8475,7 +7911,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 46 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -8483,7 +7919,7 @@ process.umask = function() { return 0; };
  * Module dependencies.
  */
 
-var url = __webpack_require__(47);
+var url = __webpack_require__(44);
 var parser = __webpack_require__(9);
 var Manager = __webpack_require__(18);
 var debug = __webpack_require__(1)('socket.io-client');
@@ -8590,7 +8026,7 @@ exports.Socket = __webpack_require__(20);
 
 
 /***/ }),
-/* 47 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -8672,7 +8108,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 48 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -8820,7 +8256,7 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 49 */
+/* 46 */
 /***/ (function(module, exports) {
 
 
@@ -8990,7 +8426,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 50 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -9000,7 +8436,7 @@ Emitter.prototype.hasListeners = function(event){
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(51);
+exports = module.exports = __webpack_require__(48);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -9164,7 +8600,7 @@ function localstorage(){
 
 
 /***/ }),
-/* 51 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -9180,7 +8616,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(52);
+exports.humanize = __webpack_require__(49);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -9367,7 +8803,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 52 */
+/* 49 */
 /***/ (function(module, exports) {
 
 /**
@@ -9498,7 +8934,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 53 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -9517,7 +8953,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 54 */
+/* 51 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -9526,7 +8962,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 55 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/wtf8 v1.0.0 by @mathias */
@@ -9766,13 +9202,15 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module), __webpack_require__(0)))
 
 /***/ }),
-/* 56 */
+/* 53 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 57 */
+/* 54 */,
+/* 55 */,
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
@@ -9785,238 +9223,137 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(27), __webpack_require__(26), __webpack_require__(25)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, CastReceiver_1, smoothscroll) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    smoothscroll.polyfill();
-    var EventHub = (function (_super) {
-        __extends(EventHub, _super);
-        function EventHub(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.isAdminMode = false;
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' ';
-            return _this;
+    var CastSender = (function (_super) {
+        __extends(CastSender, _super);
+        function CastSender() {
+            return _super !== null && _super.apply(this, arguments) || this;
         }
-        EventHub.prototype.toggleAdminMode = function () {
-            this.isAdminMode = !this.isAdminMode;
-            this.emit('isAdminModeChanged', this.isAdminMode);
-        };
-        EventHub.prototype.init = function () {
-            var _this = this;
-            document.addEventListener('keypress', function (e) {
-                if (e.keyCode === 94) {
-                    _this.toggleAdminMode();
-                }
-            });
-        };
-        return EventHub;
-    }(SyncView_1.SyncView));
-    exports.EventHub = EventHub;
-    var MainView = (function (_super) {
-        __extends(MainView, _super);
-        function MainView(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.isInited = false;
-            _this.editor = _this.addView(new PageEditor(), 'row-fill');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.el.className += ' MainView_style';
-            return _this;
-        }
-        MainView.prototype.init = function () {
-            var receiver = new CastReceiver_1.CastReceiver();
-            receiver.start();
-        };
-        MainView.prototype.render = function () {
-            if (!this.data.pages)
-                this.data.set('pages', {});
-            if (this.selectedPage)
-                this.selectedPage = this.data.pages[this.selectedPage.key];
-            if (!this.isInited) {
-                this.isInited = true;
-                var pages = SyncView_1.SyncUtils.toArray(this.data.pages);
-                if (pages.length > 0)
-                    this.selectedPage = pages[0];
+        CastSender.prototype.start = function () {
+            console.log('hereeeeee1');
+            var applicationID = '6964F1A3';
+            var namespace = 'urn:x-cast:jkalweit.signs';
+            var session = null;
+            console.log('here1');
+            if (!chrome.cast || !chrome.cast.isAvailable) {
+                console.log('here2');
+                setTimeout(initializeCastApi, 1000);
             }
-            this.editor.update(this.selectedPage);
+            function initializeCastApi() {
+                console.log('here3');
+                var sessionRequest = new chrome.cast.SessionRequest(applicationID);
+                var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener);
+                chrome.cast.initialize(apiConfig, onInitSuccess, onError);
+            }
+            function onInitSuccess() {
+                console.log('onInitSuccess');
+            }
+            function onError(message) {
+                console.log('onError: ' + JSON.stringify(message));
+            }
+            function onSuccess(message) {
+                console.log('onSuccess: ' + message);
+            }
+            function onStopAppSuccess() {
+                console.log('onStopAppSuccess');
+            }
+            function sessionListener(e) {
+                console.log('New session ID:' + e.sessionId);
+                session = e;
+                session.addUpdateListener(sessionUpdateListener);
+                session.addMessageListener(namespace, receiverMessage);
+            }
+            function sessionUpdateListener(isAlive) {
+                var message = isAlive ? 'Session Updated' : 'Session Removed';
+                message += ': ' + session.sessionId;
+                console.log(message);
+                if (!isAlive) {
+                    session = null;
+                }
+            }
+            function receiverMessage(namespace, message) {
+                console.log('receiverMessage: ' + namespace + ', ' + message);
+            }
+            function receiverListener(e) {
+                if (e === 'available') {
+                    console.log('receiver found');
+                }
+                else {
+                    console.log('receiver list empty');
+                }
+            }
+            /**
+             * send a message to the receiver using the custom namespace
+             * receiver CastMessageBus message handler will be invoked
+             * @param {string} message A message string
+             */
+            function sendMessage(message) {
+                if (session != null) {
+                    session.sendMessage(namespace, message, onSuccess.bind(this, 'Message sent: ' + message), onError);
+                }
+                else {
+                    chrome.cast.requestSession(function (e) {
+                        session = e;
+                        session.sendMessage(namespace, message, onSuccess.bind(this, 'Message sent: ' +
+                            message), onError);
+                    }, onError);
+                }
+            }
         };
-        return MainView;
-    }(SyncView_1.SyncView));
-    exports.MainView = MainView;
-    var PageList = (function (_super) {
-        __extends(PageList, _super);
-        function PageList(options) {
+        return CastSender;
+    }(SyncNode_1.SyncNodeEventEmitter));
+    exports.CastSender = CastSender;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 57 */,
+/* 58 */,
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(56)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, CastSender_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SenderView = (function (_super) {
+        __extends(SenderView, _super);
+        function SenderView(options) {
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
-            _this.isClosed = false;
-            _this.hideDrawer = _this.add('button', { "innerHTML": "<", "className": " button_hideDrawer_style" });
-            _this.title = _this.add('h1', { "innerHTML": "Pages32", "className": "" });
-            _this.addBtn = _this.add('button', { "innerHTML": "Add Page", "className": " button_addBtn_style" });
-            _this.itemList = _this.addView(new SyncView_1.SyncList({ item: PageItem }), ' SyncList_itemList_style');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row-nofill';
-            _this.el.className += ' PageList_style';
-            _this.hideDrawer.addEventListener('click', function () {
-                _this.isClosed = !_this.isClosed;
-                _this.el.style.width = _this.isClosed ? '50px' : '200px';
-                _this.hideDrawer.innerHTML = _this.isClosed ? '>' : '<';
-            });
-            _this.addBtn.addEventListener('click', function () {
-                var page = {
-                    title: 'New Page',
-                    specials: {},
-                    wines: {},
-                    cocktails: {},
-                    drafts: {},
-                    bottles: {}
-                };
-                _this.data.setItem(page);
-            });
-            _this.itemList.on('selected', function (view, page) { _this.emit('selected', page); });
-            _this.addBinding('itemList', 'update', 'data');
-            return _this;
-        }
-        return PageList;
-    }(SyncView_1.SyncView));
-    exports.PageList = PageList;
-    SyncView_1.SyncView.addGlobalStyle('.button_hideDrawer_style', " position: absolute; top: 0; right: 0; ");
-    SyncView_1.SyncView.addGlobalStyle('.button_addBtn_style', " width: 100%; ");
-    SyncView_1.SyncView.addGlobalStyle('.SyncList_itemList_style', " width: 100%; margin-top: 1em; ");
-    var PageItem = (function (_super) {
-        __extends(PageItem, _super);
-        function PageItem(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.add('span', { "innerHTML": "", "className": "" });
+            _this.header = _this.addView(new Components_1.SimpleHeader({ title: 'Ready to Cast SVML' }), ' SimpleHeader_header_style');
             _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' ';
-            _this.el.className += ' PageItem_style';
-            _this.el.addEventListener('click', _this.onClick.bind(_this));
-            _this.addBinding('title', 'innerHTML', 'data.title');
+            _this.el.className += ' SenderView_style';
             return _this;
         }
-        PageItem.prototype.onClick = function () {
-            this.emit('selected', this.data);
-        };
-        return PageItem;
+        SenderView.prototype.render = function () { };
+        return SenderView;
     }(SyncView_1.SyncView));
-    exports.PageItem = PageItem;
-    var PageEditorControls = (function (_super) {
-        __extends(PageEditorControls, _super);
-        function PageEditorControls(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.title = _this.addView(new Components_1.Input({ twoway: true, label: 'Title', key: 'title' }), 'row-nofill Input_title_style');
-            _this.fill = _this.add('div', { "innerHTML": "", "className": "row-fill row-fill" });
-            _this.delBtn = _this.add('button', { "innerHTML": "Delete Page", "className": "row-nofill row-nofill" });
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.addBinding('title', 'update', 'data');
-            _this.delBtn.addEventListener('click', function () {
-                if (confirm('Delete page?')) {
-                    _this.data.parent.remove(_this.data.key);
-                }
-            });
-            return _this;
-        }
-        return PageEditorControls;
-    }(SyncView_1.SyncView));
-    exports.PageEditorControls = PageEditorControls;
-    SyncView_1.SyncView.addGlobalStyle('.Input_title_style', " width: 350px; ");
-    var PageEditor = (function (_super) {
-        __extends(PageEditor, _super);
-        function PageEditor(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.cols = _this.addView(new PageEditorColumns(), 'col-fill');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row-fill col';
-            _this.el.className += ' PageEditor_style';
-            _this.addBinding('cols', 'update', 'data');
-            return _this;
-        }
-        PageEditor.prototype.render = function () {
-            if (this.data)
-                this.show();
-            else
-                this.hide();
-        };
-        return PageEditor;
-    }(SyncView_1.SyncView));
-    exports.PageEditor = PageEditor;
-    var PageEditorColumns = (function (_super) {
-        __extends(PageEditorColumns, _super);
-        function PageEditorColumns(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.specialsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Specials' }), 'row-fill SpecialsListView_specialsList_style');
-            _this.cocktailsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Cocktails' }), 'row-fill SpecialsListView_cocktailsList_style');
-            _this.draftWineColumn = _this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
-            _this.bottlesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Bottles' }), 'row-fill SpecialsListView_bottlesList_style');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' row';
-            _this.addBinding('specialsList', 'update', 'data.specials');
-            _this.addBinding('cocktailsList', 'update', 'data.cocktails');
-            _this.addBinding('draftWineColumn', 'update', 'data');
-            _this.addBinding('bottlesList', 'update', 'data.bottles');
-            return _this;
-        }
-        PageEditorColumns.prototype.init = function () {
-            var _this = this;
-            eventHub.on('isAdminModeChanged', function (isAdminMode) {
-                _this.specialsList.updateAdminMode(isAdminMode);
-                _this.cocktailsList.updateAdminMode(isAdminMode);
-                _this.bottlesList.updateAdminMode(isAdminMode);
-            });
-        };
-        return PageEditorColumns;
-    }(SyncView_1.SyncView));
-    exports.PageEditorColumns = PageEditorColumns;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_specialsList_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', " min-width: 200px; margin-right: 2em; ");
-    var DraftWineColumn = (function (_super) {
-        __extends(DraftWineColumn, _super);
-        function DraftWineColumn(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.draftsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Drafts' }), 'col-fill SpecialsListView_draftsList_style');
-            _this.winesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Wines' }), 'col-fill SpecialsListView_winesList_style');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' col';
-            _this.addBinding('draftsList', 'update', 'data.drafts');
-            _this.addBinding('winesList', 'update', 'data.wines');
-            return _this;
-        }
-        DraftWineColumn.prototype.init = function () {
-            var _this = this;
-            eventHub.on('isAdminModeChanged', function (isAdminMode) {
-                _this.draftsList.updateAdminMode(isAdminMode);
-                _this.winesList.updateAdminMode(isAdminMode);
-            });
-        };
-        return DraftWineColumn;
-    }(SyncView_1.SyncView));
-    exports.DraftWineColumn = DraftWineColumn;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', " min-width: 200px; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_winesList_style', " min-width: 200px; margin-right: 2em; ");
-    var app = new SyncView_1.SyncApp(new MainView());
-    app.start();
+    exports.SenderView = SenderView;
+    SyncView_1.SyncView.addGlobalStyle('.SimpleHeader_header_style', " padding-bottom: 1em; color: #AAA; ");
     new SyncView_1.SyncReloader().start();
-    var eventHub = new EventHub();
-    eventHub.init();
-    SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n        left: 0; top: 0; right: 0; bottom: 0;\n        color: #FFF;\n        background-color: #000;\n    ");
-    SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
-    SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
-    SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");
+    var sender = new CastSender_1.CastSender();
+    sender.start();
+    var app = new SyncView_1.SyncApp(new SenderView());
+    app.start();
+    SyncView_1.SyncView.addGlobalStyle('.SenderView_style', " padding: 0 1em; ");
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=bundle.js.map
+//# sourceMappingURL=senderBundle.js.map

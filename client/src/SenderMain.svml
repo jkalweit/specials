@@ -1,0 +1,18 @@
+{
+import { Input, Modal, SimpleHeader } from './Components'
+import { CastSender } from './CastSender'
+}
+
+SenderView
+    .style { padding: 0 1em; }
+    #header:SimpleHeader({ title: 'Ready to Cast SVML' })
+        .style { padding-bottom: 1em; color: #AAA; }
+    render() {}
+
+{
+    new SyncReloader().start();
+    let sender = new CastSender();
+    sender.start();
+    let app = new SyncApp<SyncData>(new SenderView());
+    app.start();
+}

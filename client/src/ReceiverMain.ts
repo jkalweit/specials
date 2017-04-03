@@ -7,6 +7,7 @@ import { SyncView, SyncApp, SyncList, SyncUtils, SyncReloader } from "./SyncNode
     import { SpecialsListView } from './Specials'
     import { CastReceiver } from './CastReceiver'
 
+
     import * as smoothscroll from './lib/smoothscroll'
     smoothscroll.polyfill();
 
@@ -44,6 +45,10 @@ export class MainView extends SyncView<MainData> {
 		this.el.className += ' row';
 		this.el.className += ' MainView_style';
 	}
+	init() {
+        let receiver = new CastReceiver();
+        receiver.start();
+    }
 	render() { 
         if(!this.data.pages) this.data.set('pages', {});
         if(this.selectedPage) this.selectedPage = this.data.pages[this.selectedPage.key];
@@ -193,11 +198,7 @@ SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px;
     eventHub.init();
     let app = new SyncApp<SyncData>(new MainView());
     app.start();
-
     new SyncReloader().start();
-
-    let receiver = new CastReceiver();
-    receiver.start();
 
 SyncView.addGlobalStyle('.MainView_style', ` 
         position: absolute;
