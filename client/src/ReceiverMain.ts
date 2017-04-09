@@ -46,8 +46,8 @@ export class MainView extends SyncView<MainData> {
 		this.el.className += ' MainView_style';
 	}
 	init() {
-        let receiver = new CastReceiver();
-        receiver.start();
+        //let receiver = new CastReceiver();
+        //receiver.start();
     }
 	render() { 
         if(!this.data.pages) this.data.set('pages', {});
@@ -148,51 +148,32 @@ export class PageEditor extends SyncView<PageData> {
 
 export class PageEditorColumns extends SyncView<SyncData> {
 	specialsList = this.addView(new SpecialsListView({title: 'Specials'}), 'row-fill SpecialsListView_specialsList_style');
+	draftsList = this.addView(new SpecialsListView({title: 'Drafts'}), 'row-fill SpecialsListView_draftsList_style');
+	winesList = this.addView(new SpecialsListView({title: 'Wines'}), 'row-fill SpecialsListView_winesList_style');
 	cocktailsList = this.addView(new SpecialsListView({title: 'Cocktails'}), 'row-fill SpecialsListView_cocktailsList_style');
-	draftWineColumn = this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
-	bottlesList = this.addView(new SpecialsListView({title: 'Bottles'}), 'row-fill SpecialsListView_bottlesList_style');
 	constructor(options: any = {}) {
 		super(options);
 		this.options = SyncUtils.mergeMap({}, options);
 		this.el.className += ' row';
 		this.addBinding('specialsList', 'update', 'data.specials');
+		this.addBinding('draftsList', 'update', 'data.drafts');
+		this.addBinding('winesList', 'update', 'data.wines');
 		this.addBinding('cocktailsList', 'update', 'data.cocktails');
-		this.addBinding('draftWineColumn', 'update', 'data');
-		this.addBinding('bottlesList', 'update', 'data.bottles');
 	}
 	init() {
         eventHub.on('isAdminModeChanged', (isAdminMode) => {
             this.specialsList.updateAdminMode(isAdminMode);
+            this.draftsList.updateAdminMode(isAdminMode);
+            this.winesList.updateAdminMode(isAdminMode);
             this.cocktailsList.updateAdminMode(isAdminMode);
-            this.bottlesList.updateAdminMode(isAdminMode);
         });
     }
 }
 
 SyncView.addGlobalStyle('.SpecialsListView_specialsList_style', ` min-width: 200px; margin-right: 2em; `);
-SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', ` min-width: 200px; margin-right: 2em; `);
-SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', ` min-width: 200px; margin-right: 2em; `);
-SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', ` min-width: 200px; margin-right: 2em; `);
-export class DraftWineColumn extends SyncView<SyncData> {
-	draftsList = this.addView(new SpecialsListView({title: 'Drafts'}), 'col-fill SpecialsListView_draftsList_style');
-	winesList = this.addView(new SpecialsListView({title: 'Wines'}), 'col-fill SpecialsListView_winesList_style');
-	constructor(options: any = {}) {
-		super(options);
-		this.options = SyncUtils.mergeMap({}, options);
-		this.el.className += ' col';
-		this.addBinding('draftsList', 'update', 'data.drafts');
-		this.addBinding('winesList', 'update', 'data.wines');
-	}
-	init() {
-        eventHub.on('isAdminModeChanged', (isAdminMode: boolean) => {
-            this.draftsList.updateAdminMode(isAdminMode);
-            this.winesList.updateAdminMode(isAdminMode);
-        });
-    }
-}
-
-SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', ` min-width: 200px; `);
+SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', ` min-width: 200px; margin-right: 2em; `);
 SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px; margin-right: 2em; `);
+SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', ` min-width: 200px; margin-right: 2em; `);
 
     let eventHub = new EventHub();
     eventHub.init();
@@ -202,6 +183,7 @@ SyncView.addGlobalStyle('.SpecialsListView_winesList_style', ` min-width: 200px;
 
 SyncView.addGlobalStyle('.MainView_style', ` 
         position: absolute;
+		padding: 2em;
         left: 0; top: 0; right: 0; bottom: 0;
         color: #FFF;
         background-color: #000;

@@ -392,7 +392,7 @@ export class SyncReloader {
 		// for debugging, receive reload signals from server when source files change
 		io().on('reload', function () {
 			console.log('reload!!!!');
-			location.reload();
+			window.location.reload(true);
 		});
 	}
 }

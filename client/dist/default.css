@@ -3,6 +3,7 @@ body {
 	padding: 0;
 	font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
 	color:#444;
+	background-image: url("imgs/logo.png");
 }
 
 h1,h2,h3 {

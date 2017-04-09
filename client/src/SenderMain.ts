@@ -19,9 +19,11 @@ export class SenderView extends SyncView<SyncData> {
 SyncView.addGlobalStyle('.SimpleHeader_header_style', ` padding-bottom: 1em; color: #AAA; `);
 
     new SyncReloader().start();
-    let sender = new CastSender();
-    sender.start();
+    //let sender = new CastSender();
+    //sender.start();
     let app = new SyncApp<SyncData>(new SenderView());
     app.start();
+
+
 
 SyncView.addGlobalStyle('.SenderView_style', ` padding: 0 1em; `);

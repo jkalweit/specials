@@ -10,5 +10,94 @@
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
   <script type="text/javascript" src="senderBundle.js"></script>
+  <script>
+    console.log('hereeeeee1')
+
+    let applicationID = '6964F1A3';
+    let namespace = 'urn:x-cast:jkalweit.signs';
+    let session = null;
+
+    console.log('here1')
+    if (!chrome.cast || !chrome.cast.isAvailable) {
+      console.log('here2')
+      setTimeout(initializeCastApi, 1000);
+    }
+
+    function initializeCastApi() {
+      console.log('here3')
+      var sessionRequest = new chrome.cast.SessionRequest(applicationID);
+      var apiConfig = new chrome.cast.ApiConfig(sessionRequest,
+        sessionListener,
+        receiverListener);
+
+      chrome.cast.initialize(apiConfig, onInitSuccess, onError);
+    }
+
+    function onInitSuccess() {
+      console.log('onInitSuccess');
+    }
+
+    function onError(message) {
+      console.log('onError: ' + JSON.stringify(message));
+    }
+
+    function onSuccess(message) {
+      console.log('onSuccess: ' + message);
+    }
+
+    function onStopAppSuccess() {
+      console.log('onStopAppSuccess');
+    }
+
+    function sessionListener(e) {
+      console.log('New session ID:' + e.sessionId);
+      session = e;
+      session.addUpdateListener(sessionUpdateListener);
+      session.addMessageListener(namespace, receiverMessage);
+    }
+
+    function sessionUpdateListener(isAlive) {
+      var message = isAlive ? 'Session Updated' : 'Session Removed';
+      message += ': ' + session.sessionId;
+      console.log(message);
+      if (!isAlive) {
+        session = null;
+      }
+    }
+
+    function receiverMessage(namespace, message) {
+      console.log('receiverMessage: ' + namespace + ', ' + message);
+    }
+
+    function receiverListener(e) {
+      if (e === 'available') {
+        console.log('receiver found');
+      }
+      else {
+        console.log('receiver list empty');
+      }
+    }
+
+
+    /**
+     * send a message to the receiver using the custom namespace
+     * receiver CastMessageBus message handler will be invoked
+     * @param {string} message A message string
+     */
+    function sendMessage(message) {
+      if (session != null) {
+        session.sendMessage(namespace, message, onSuccess.bind(this, 'Message sent: ' + message),
+          onError);
+      }
+      else {
+        chrome.cast.requestSession(function (e) {
+          session = e;
+          session.sendMessage(namespace, message, onSuccess.bind(this, 'Message sent: ' +
+            message), onError);
+        }, onError);
+      }
+    }
+
+  </script>
 </body>
 </html>

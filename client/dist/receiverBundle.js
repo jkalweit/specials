@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -104,7 +104,7 @@ module.exports = g;
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(30);
+exports = module.exports = __webpack_require__(29);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -275,7 +275,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53)))
 
 /***/ }),
 /* 2 */
@@ -285,15 +285,15 @@ function localstorage(){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(37);
+var keys = __webpack_require__(36);
 var hasBinary = __webpack_require__(14);
-var sliceBuffer = __webpack_require__(26);
-var after = __webpack_require__(25);
-var utf8 = __webpack_require__(52);
+var sliceBuffer = __webpack_require__(25);
+var after = __webpack_require__(24);
+var utf8 = __webpack_require__(51);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(28);
+  base64encoder = __webpack_require__(27);
 }
 
 /**
@@ -351,7 +351,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(29);
+var Blob = __webpack_require__(28);
 
 /**
  * Encodes a packet.
@@ -1088,7 +1088,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /*
@@ -1465,7 +1465,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             // for debugging, receive reload signals from server when source files change
             io().on('reload', function () {
                 console.log('reload!!!!');
-                location.reload();
+                window.location.reload(true);
             });
         };
         return SyncReloader;
@@ -1734,11 +1734,11 @@ exports.decode = function(qs){
  * Module dependencies.
  */
 
-var debug = __webpack_require__(47)('socket.io-parser');
+var debug = __webpack_require__(46)('socket.io-parser');
 var json = __webpack_require__(39);
-var Emitter = __webpack_require__(46);
-var binary = __webpack_require__(45);
-var isBuf = __webpack_require__(21);
+var Emitter = __webpack_require__(45);
+var binary = __webpack_require__(44);
+var isBuf = __webpack_require__(20);
 
 /**
  * Protocol version.
@@ -2295,9 +2295,9 @@ module.exports = function(obj, fn){
  */
 
 var XMLHttpRequest = __webpack_require__(7);
-var XHR = __webpack_require__(35);
-var JSONP = __webpack_require__(34);
-var websocket = __webpack_require__(36);
+var XHR = __webpack_require__(34);
+var JSONP = __webpack_require__(33);
+var websocket = __webpack_require__(35);
 
 /**
  * Export transports.
@@ -2358,7 +2358,7 @@ var Transport = __webpack_require__(6);
 var parseqs = __webpack_require__(8);
 var parser = __webpack_require__(2);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(24);
+var yeast = __webpack_require__(22);
 var debug = __webpack_require__(1)('engine.io-client:polling');
 
 /**
@@ -2606,7 +2606,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(16);
+var isArray = __webpack_require__(37);
 
 /**
  * Module exports.
@@ -2682,15 +2682,6 @@ module.exports = function(arr, obj){
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
 /**
  * Parses an URI
  *
@@ -2733,7 +2724,7 @@ module.exports = function parseuri(str) {
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -2741,15 +2732,15 @@ module.exports = function parseuri(str) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(31);
-var Socket = __webpack_require__(20);
+var eio = __webpack_require__(30);
+var Socket = __webpack_require__(19);
 var Emitter = __webpack_require__(3);
 var parser = __webpack_require__(9);
-var on = __webpack_require__(19);
+var on = __webpack_require__(18);
 var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:manager');
 var indexOf = __webpack_require__(15);
-var Backoff = __webpack_require__(27);
+var Backoff = __webpack_require__(26);
 
 /**
  * IE6+ hasOwnProperty
@@ -3299,7 +3290,7 @@ Manager.prototype.onreconnect = function () {
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports) {
 
 
@@ -3329,7 +3320,7 @@ function on (obj, ev, fn) {
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -3340,7 +3331,7 @@ function on (obj, ev, fn) {
 var parser = __webpack_require__(9);
 var Emitter = __webpack_require__(3);
 var toArray = __webpack_require__(50);
-var on = __webpack_require__(19);
+var on = __webpack_require__(18);
 var bind = __webpack_require__(11);
 var debug = __webpack_require__(1)('socket.io-client:socket');
 var hasBin = __webpack_require__(14);
@@ -3754,7 +3745,7 @@ Socket.prototype.compress = function (compress) {
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -3774,7 +3765,7 @@ function isBuf(obj) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
@@ -3787,7 +3778,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(43)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(42)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, io) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SyncNodeEventEmitter = (function () {
@@ -4199,35 +4190,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
 
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4302,7 +4265,35 @@ module.exports = yeast;
 
 
 /***/ }),
-/* 25 */
+/* 23 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -4336,7 +4327,7 @@ function noop() {}
 
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /**
@@ -4371,7 +4362,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports) {
 
 
@@ -4462,7 +4453,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /*
@@ -4535,7 +4526,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4638,7 +4629,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -4844,19 +4835,19 @@ function coerce(val) {
 
 
 /***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(31);
+
+
+/***/ }),
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 module.exports = __webpack_require__(32);
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(33);
 
 /**
  * Exports parser
@@ -4868,7 +4859,7 @@ module.exports.parser = __webpack_require__(2);
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -4880,7 +4871,7 @@ var Emitter = __webpack_require__(3);
 var debug = __webpack_require__(1)('engine.io-client:socket');
 var index = __webpack_require__(15);
 var parser = __webpack_require__(2);
-var parseuri = __webpack_require__(17);
+var parseuri = __webpack_require__(16);
 var parsejson = __webpack_require__(41);
 var parseqs = __webpack_require__(8);
 
@@ -5613,7 +5604,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -5851,7 +5842,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6282,7 +6273,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -6293,13 +6284,13 @@ var Transport = __webpack_require__(6);
 var parser = __webpack_require__(2);
 var parseqs = __webpack_require__(8);
 var inherit = __webpack_require__(4);
-var yeast = __webpack_require__(24);
+var yeast = __webpack_require__(22);
 var debug = __webpack_require__(1)('engine.io-client:websocket');
 var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(53);
+    NodeWebSocket = __webpack_require__(54);
   } catch (e) { }
 }
 
@@ -6574,7 +6565,7 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports) {
 
 
@@ -6595,6 +6586,15 @@ module.exports = Object.keys || function keys (obj){
     }
   }
   return arr;
+};
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
 
@@ -6629,7 +6629,7 @@ try {
 ;(function () {
   // Detect the `define` function exposed by asynchronous module loaders. The
   // strict `define` check is necessary for compatibility with `r.js`.
-  var isLoader = "function" === "function" && __webpack_require__(51);
+  var isLoader = "function" === "function" && __webpack_require__(52);
 
   // A set of types used to distinguish objects from primitives.
   var objectTypes = {
@@ -7726,192 +7726,6 @@ module.exports = function parsejson(data) {
 
 /***/ }),
 /* 42 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -7919,9 +7733,9 @@ process.umask = function() { return 0; };
  * Module dependencies.
  */
 
-var url = __webpack_require__(44);
+var url = __webpack_require__(43);
 var parser = __webpack_require__(9);
-var Manager = __webpack_require__(18);
+var Manager = __webpack_require__(17);
 var debug = __webpack_require__(1)('socket.io-client');
 
 /**
@@ -8021,12 +7835,12 @@ exports.connect = lookup;
  * @api public
  */
 
-exports.Manager = __webpack_require__(18);
-exports.Socket = __webpack_require__(20);
+exports.Manager = __webpack_require__(17);
+exports.Socket = __webpack_require__(19);
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -8034,7 +7848,7 @@ exports.Socket = __webpack_require__(20);
  * Module dependencies.
  */
 
-var parseuri = __webpack_require__(17);
+var parseuri = __webpack_require__(16);
 var debug = __webpack_require__(1)('socket.io-client:url');
 
 /**
@@ -8108,7 +7922,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -8117,8 +7931,8 @@ function url (uri, loc) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(16);
-var isBuf = __webpack_require__(21);
+var isArray = __webpack_require__(48);
+var isBuf = __webpack_require__(20);
 
 /**
  * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -8256,7 +8070,7 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 
@@ -8426,7 +8240,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -8436,7 +8250,7 @@ Emitter.prototype.hasListeners = function(event){
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(48);
+exports = module.exports = __webpack_require__(47);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -8600,7 +8414,7 @@ function localstorage(){
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -8803,6 +8617,15 @@ function coerce(val) {
 
 
 /***/ }),
+/* 48 */
+/***/ (function(module, exports) {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
 /* 49 */
 /***/ (function(module, exports) {
 
@@ -8954,15 +8777,6 @@ function toArray(list, index) {
 
 /***/ }),
 /* 51 */
-/***/ (function(module, exports) {
-
-/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
-module.exports = __webpack_amd_options__;
-
-/* WEBPACK VAR INJECTION */}.call(exports, {}))
-
-/***/ }),
-/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/wtf8 v1.0.0 by @mathias */
@@ -9202,13 +9016,208 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module), __webpack_require__(0)))
 
 /***/ }),
+/* 52 */
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ }),
 /* 53 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 54 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -9545,72 +9554,9 @@ module.exports = __webpack_amd_options__;
 
 
 /***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncNode_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var CastReceiver = (function (_super) {
-        __extends(CastReceiver, _super);
-        function CastReceiver() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        CastReceiver.prototype.start = function () {
-            window.onload = function () {
-                cast.receiver.logger.setLevelValue(0);
-                window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-                console.log('Starting Receiver Manager');
-                castReceiverManager.onReady = function (event) {
-                    console.log('Received Ready event: ' + JSON.stringify(event.data));
-                    window.castReceiverManager.setApplicationState('Application status is ready...');
-                };
-                castReceiverManager.onSenderConnected = function (event) {
-                    console.log('Received Sender Connected event: ' + event.data);
-                    console.log(window.castReceiverManager.getSender(event.data).userAgent);
-                };
-                castReceiverManager.onSenderDisconnected = function (event) {
-                    console.log('Received Sender Disconnected event: ' + event.data);
-                    if (window.castReceiverManager.getSenders().length == 0) {
-                        window.close();
-                    }
-                };
-                // create a CastMessageBus to handle messages for a custom namespace
-                window.messageBus =
-                    window.castReceiverManager.getCastMessageBus('urn:x-cast:jkalweit.signs');
-                // handler for the CastMessageBus message event
-                window.messageBus.onMessage = function (event) {
-                    console.log('Message [' + event.senderId + ']: ' + event.data);
-                    this.emit('message', event);
-                    // inform all senders on the CastMessageBus of the incoming message event
-                    // sender message listener will be invoked
-                    window.messageBus.send(event.senderId, event.data);
-                };
-                // initialize the CastReceiverManager with an application status message
-                window.castReceiverManager.start({ statusText: 'Application is starting' });
-                console.log('Receiver Manager started');
-            };
-        };
-        return CastReceiver;
-    }(SyncNode_1.SyncNodeEventEmitter));
-    exports.CastReceiver = CastReceiver;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
 /* 56 */,
-/* 57 */
+/* 57 */,
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
@@ -9773,7 +9719,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = (this && this.__extends) || (function () {
@@ -9786,7 +9732,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(57), __webpack_require__(55), __webpack_require__(54)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, CastReceiver_1, smoothscroll) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5), __webpack_require__(10), __webpack_require__(58), __webpack_require__(55)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, SyncView_1, Components_1, Specials_1, smoothscroll) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     smoothscroll.polyfill();
@@ -9828,8 +9774,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             return _this;
         }
         MainView.prototype.init = function () {
-            var receiver = new CastReceiver_1.CastReceiver();
-            receiver.start();
+            //let receiver = new CastReceiver();
+            //receiver.start();
         };
         MainView.prototype.render = function () {
             if (!this.data.pages)
@@ -9954,63 +9900,39 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __extends = 
             if (options === void 0) { options = {}; }
             var _this = _super.call(this, options) || this;
             _this.specialsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Specials' }), 'row-fill SpecialsListView_specialsList_style');
+            _this.draftsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Drafts' }), 'row-fill SpecialsListView_draftsList_style');
+            _this.winesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Wines' }), 'row-fill SpecialsListView_winesList_style');
             _this.cocktailsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Cocktails' }), 'row-fill SpecialsListView_cocktailsList_style');
-            _this.draftWineColumn = _this.addView(new DraftWineColumn(), 'row-fill DraftWineColumn_draftWineColumn_style');
-            _this.bottlesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Bottles' }), 'row-fill SpecialsListView_bottlesList_style');
             _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
             _this.el.className += ' row';
             _this.addBinding('specialsList', 'update', 'data.specials');
+            _this.addBinding('draftsList', 'update', 'data.drafts');
+            _this.addBinding('winesList', 'update', 'data.wines');
             _this.addBinding('cocktailsList', 'update', 'data.cocktails');
-            _this.addBinding('draftWineColumn', 'update', 'data');
-            _this.addBinding('bottlesList', 'update', 'data.bottles');
             return _this;
         }
         PageEditorColumns.prototype.init = function () {
             var _this = this;
             eventHub.on('isAdminModeChanged', function (isAdminMode) {
                 _this.specialsList.updateAdminMode(isAdminMode);
+                _this.draftsList.updateAdminMode(isAdminMode);
+                _this.winesList.updateAdminMode(isAdminMode);
                 _this.cocktailsList.updateAdminMode(isAdminMode);
-                _this.bottlesList.updateAdminMode(isAdminMode);
             });
         };
         return PageEditorColumns;
     }(SyncView_1.SyncView));
     exports.PageEditorColumns = PageEditorColumns;
     SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_specialsList_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.DraftWineColumn_draftWineColumn_style', " min-width: 200px; margin-right: 2em; ");
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_bottlesList_style', " min-width: 200px; margin-right: 2em; ");
-    var DraftWineColumn = (function (_super) {
-        __extends(DraftWineColumn, _super);
-        function DraftWineColumn(options) {
-            if (options === void 0) { options = {}; }
-            var _this = _super.call(this, options) || this;
-            _this.draftsList = _this.addView(new Specials_1.SpecialsListView({ title: 'Drafts' }), 'col-fill SpecialsListView_draftsList_style');
-            _this.winesList = _this.addView(new Specials_1.SpecialsListView({ title: 'Wines' }), 'col-fill SpecialsListView_winesList_style');
-            _this.options = SyncView_1.SyncUtils.mergeMap({}, options);
-            _this.el.className += ' col';
-            _this.addBinding('draftsList', 'update', 'data.drafts');
-            _this.addBinding('winesList', 'update', 'data.wines');
-            return _this;
-        }
-        DraftWineColumn.prototype.init = function () {
-            var _this = this;
-            eventHub.on('isAdminModeChanged', function (isAdminMode) {
-                _this.draftsList.updateAdminMode(isAdminMode);
-                _this.winesList.updateAdminMode(isAdminMode);
-            });
-        };
-        return DraftWineColumn;
-    }(SyncView_1.SyncView));
-    exports.DraftWineColumn = DraftWineColumn;
-    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', " min-width: 200px; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_draftsList_style', " min-width: 200px; margin-right: 2em; ");
     SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_winesList_style', " min-width: 200px; margin-right: 2em; ");
+    SyncView_1.SyncView.addGlobalStyle('.SpecialsListView_cocktailsList_style', " min-width: 200px; margin-right: 2em; ");
     var eventHub = new EventHub();
     eventHub.init();
     var app = new SyncView_1.SyncApp(new MainView());
     app.start();
     new SyncView_1.SyncReloader().start();
-    SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n        left: 0; top: 0; right: 0; bottom: 0;\n        color: #FFF;\n        background-color: #000;\n    ");
+    SyncView_1.SyncView.addGlobalStyle('.MainView_style', " \n        position: absolute;\n\t\tpadding: 2em;\n        left: 0; top: 0; right: 0; bottom: 0;\n        color: #FFF;\n        background-color: #000;\n    ");
     SyncView_1.SyncView.addGlobalStyle('.PageList_style', "\n        border-right: 1px solid #BBB;\n        width: 200px;\n        padding: 0 1em;\n        box-sizing: border-box;\n        position: relative;\n        overflow: hidden;\n    ");
     SyncView_1.SyncView.addGlobalStyle('.PageItem_style', " \n        width: 100%; \n        border: 1px solid #DDD;\n        ");
     SyncView_1.SyncView.addGlobalStyle('.PageEditor_style', "\n        padding: 1em;\n    ");

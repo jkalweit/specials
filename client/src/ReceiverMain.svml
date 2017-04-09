@@ -26,7 +26,6 @@ EventHub
 		});
     }
 
-
 MainView<MainData>[row]
     @{ 
         selectedPage: PageData;
@@ -34,6 +33,7 @@ MainView<MainData>[row]
     }
     .style { 
         position: absolute;
+		padding: 2em;
         left: 0; top: 0; right: 0; bottom: 0;
         color: #FFF;
         background-color: #000;
@@ -47,8 +47,8 @@ MainView<MainData>[row]
     */
     #editor:PageEditor[row-fill]
     init() {
-        let receiver = new CastReceiver();
-        receiver.start();
+        //let receiver = new CastReceiver();
+        //receiver.start();
     }
     render() { 
         if(!this.data.pages) this.data.set('pages', {});
@@ -133,32 +133,20 @@ PageEditor<PageData>[row-fill col]
 PageEditorColumns[row]
     #specialsList:SpecialsListView({title: 'Specials'})[row-fill] $data.specials
         .style { min-width: 200px; margin-right: 2em; }
+    #draftsList:SpecialsListView({title: 'Drafts'})[row-fill] $data.drafts
+        .style { min-width: 200px; margin-right: 2em; }
+    #winesList:SpecialsListView({title: 'Wines'})[row-fill] $data.wines
+        .style { min-width: 200px; margin-right: 2em; }
     #cocktailsList:SpecialsListView({title: 'Cocktails'})[row-fill] $data.cocktails
-        .style { min-width: 200px; margin-right: 2em; }
-    #draftWineColumn:DraftWineColumn[row-fill] $data
-        .style { min-width: 200px; margin-right: 2em; }
-    #bottlesList:SpecialsListView({title: 'Bottles'})[row-fill] $data.bottles
         .style { min-width: 200px; margin-right: 2em; }
     init() {
         eventHub.on('isAdminModeChanged', (isAdminMode) => {
             this.specialsList.updateAdminMode(isAdminMode);
-            this.cocktailsList.updateAdminMode(isAdminMode);
-            this.bottlesList.updateAdminMode(isAdminMode);
-        });
-    }
-
-DraftWineColumn[col]
-    #draftsList:SpecialsListView({title: 'Drafts'})[col-fill] $data.drafts
-        .style { min-width: 200px; }
-    #winesList:SpecialsListView({title: 'Wines'})[col-fill] $data.wines
-        .style { min-width: 200px; margin-right: 2em; }
-    init() {
-        eventHub.on('isAdminModeChanged', (isAdminMode: boolean) => {
             this.draftsList.updateAdminMode(isAdminMode);
             this.winesList.updateAdminMode(isAdminMode);
+            this.cocktailsList.updateAdminMode(isAdminMode);
         });
     }
-
 
 {
     let eventHub = new EventHub();
